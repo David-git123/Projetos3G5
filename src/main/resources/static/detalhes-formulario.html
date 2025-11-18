@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CARE — Detalhes da Pesquisa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="detalhes">
+    <header class="site-header">
+      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav" aria-label="Principal">
+        <a href="index.html">Início</a>
+        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
+        <a href="perfil.html" class="requires-auth">Perfil</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
+      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
+    </header>
+
+    <main class="container page-shell">
+      <section class="page-title">
+        <h1 id="tituloFormulario">Carregando...</h1>
+        <p id="descricaoFormulario" class="muted"></p>
+        <div style="margin-top:1rem;">
+          <span id="statusBadge" style="padding:6px 12px;border-radius:6px;font-size:0.9rem;"></span>
+        </div>
+      </section>
+
+      <div id="loading" style="text-align:center; padding:2rem;">
+        <p class="muted">Carregando detalhes...</p>
+      </div>
+
+      <div id="conteudo" style="display:none;">
+        <!-- Modo Edição -->
+        <div id="modoEdicao" style="display:none;">
+          <section class="card">
+            <h3>Editar Pesquisa</h3>
+            <div id="mensagemEdicao" style="display:none; padding:12px; margin-bottom:16px; border-radius:8px;"></div>
+            <form class="form" id="formEdicao">
+              <label>
+                <span>Título</span>
+                <input type="text" id="editTitulo" required />
+              </label>
+              <label>
+                <span>Descrição</span>
+                <textarea id="editDescricao" rows="3"></textarea>
+              </label>
+              <label>
+                <span>Status</span>
+                <select id="editStatus">
+                  <option value="RASCUNHO">Rascunho</option>
+                  <option value="ATIVO">Ativo</option>
+                  <option value="INATIVO">Inativo</option>
+                </select>
+              </label>
+              <div style="display:flex;gap:8px;margin-top:1rem;">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-ghost" onclick="cancelarEdicao()">Cancelar</button>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <!-- Modo Visualização -->
+        <div id="modoVisualizacao">
+          <section class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+              <h3>Informações</h3>
+              <div>
+                <button class="btn btn-ghost" onclick="ativarEdicao()" id="btnEditar">Editar</button>
+                <button class="btn btn-primary" onclick="adicionarPergunta()" id="btnAdicionarPergunta">+ Adicionar Pergunta</button>
+              </div>
+            </div>
+            <p><strong>Data de criação:</strong> <span id="dataCriacao"></span></p>
+            <p><strong>Última atualização:</strong> <span id="dataAtualizacao"></span></p>
+            <p><strong>Total de perguntas:</strong> <span id="totalPerguntas">0</span></p>
+          </section>
+
+          <section class="card">
+            <h3>Perguntas</h3>
+            <div id="listaPerguntas">
+              <p class="muted">Nenhuma pergunta adicionada ainda.</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Modal para adicionar pergunta -->
+        <div id="modalPergunta" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+          <div class="card" style="max-width:600px;width:90%;max-height:90vh;overflow-y:auto;">
+            <h3>Adicionar Pergunta</h3>
+            <div id="mensagemPergunta" style="display:none; padding:12px; margin-bottom:16px; border-radius:8px;"></div>
+            <form class="form" id="formPergunta">
+              <label>
+                <span>Texto da pergunta</span>
+                <input type="text" id="perguntaTexto" placeholder="Digite a pergunta" required />
+              </label>
+              <label>
+                <span>Tipo de pergunta</span>
+                <select id="perguntaTipo" required>
+                  <option value="TEXTO">Texto livre</option>
+                  <option value="MULTIPLA_ESCOLHA">Múltipla escolha</option>
+                  <option value="ESCALA">Escala (1-5)</option>
+                  <option value="DATA">Data</option>
+                  <option value="NUMERO">Número</option>
+                </select>
+              </label>
+              <label>
+                <span>Ordem</span>
+                <input type="number" id="perguntaOrdem" value="1" min="1" required />
+              </label>
+              <label>
+                <input type="checkbox" id="perguntaObrigatoria" />
+                <span>Pergunta obrigatória</span>
+              </label>
+              <div id="opcoesContainer" style="display:none;">
+                <label>
+                  <span>Opções (separadas por vírgula)</span>
+                  <input type="text" id="perguntaOpcoes" placeholder="Opção 1, Opção 2, Opção 3" />
+                </label>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:1rem;">
+                <button type="submit" class="btn btn-primary">Adicionar</button>
+                <button type="button" class="btn btn-ghost" onclick="fecharModalPergunta()">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="assets/app.js"></script>
+    <script>
+      let formularioId = null;
+      let formularioAtual = null;
+
+      // Carregar formulário
+      (async function() {
+        const params = new URLSearchParams(window.location.search);
+        formularioId = params.get('id');
+        
+        if (!formularioId) {
+          window.location.href = 'minhas-pesquisas.html';
+          return;
+        }
+
+        await carregarFormulario();
+      })();
+
+      async function carregarFormulario() {
+        try {
+          const response = await fetch(`/api/formularios/${formularioId}`, {
+            credentials: 'include'
+          });
+          
+          const data = await response.json();
+          
+          if (data.success && data.formulario) {
+            formularioAtual = data.formulario;
+            exibirFormulario(data.formulario);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('conteudo').style.display = 'block';
+          } else {
+            alert('Formulário não encontrado ou você não tem permissão.');
+            window.location.href = 'minhas-pesquisas.html';
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          alert('Erro ao carregar formulário.');
+          window.location.href = 'minhas-pesquisas.html';
+        }
+      }
+
+      function exibirFormulario(form) {
+        document.getElementById('tituloFormulario').textContent = form.titulo;
+        document.getElementById('descricaoFormulario').textContent = form.descricao || 'Sem descrição';
+        
+        const statusBadge = document.getElementById('statusBadge');
+        if (form.status === 'ATIVO') {
+          statusBadge.textContent = 'Ativo';
+          statusBadge.style.background = '#d4edda';
+          statusBadge.style.color = '#155724';
+        } else if (form.status === 'RASCUNHO') {
+          statusBadge.textContent = 'Rascunho';
+          statusBadge.style.background = '#fff3cd';
+          statusBadge.style.color = '#856404';
+        } else {
+          statusBadge.textContent = 'Inativo';
+          statusBadge.style.background = '#f8d7da';
+          statusBadge.style.color = '#721c24';
+        }
+
+        document.getElementById('dataCriacao').textContent = form.dataCriacao ? new Date(form.dataCriacao).toLocaleString('pt-BR') : '—';
+        document.getElementById('dataAtualizacao').textContent = form.dataAtualizacao ? new Date(form.dataAtualizacao).toLocaleString('pt-BR') : '—';
+        document.getElementById('totalPerguntas').textContent = form.perguntas ? form.perguntas.length : 0;
+
+        // Exibir perguntas
+        const listaPerguntas = document.getElementById('listaPerguntas');
+        if (form.perguntas && form.perguntas.length > 0) {
+          listaPerguntas.innerHTML = '';
+          form.perguntas.sort((a, b) => (a.ordem || 0) - (b.ordem || 0)).forEach((pergunta, index) => {
+            const div = document.createElement('div');
+            div.style.cssText = 'padding:1rem;border:1px solid rgba(0,0,0,0.1);border-radius:8px;margin-bottom:0.5rem;';
+            div.innerHTML = `
+              <div style="display:flex;justify-content:space-between;align-items:start;">
+                <div style="flex:1;">
+                  <strong>${index + 1}. ${escapeHtml(pergunta.texto)}</strong>
+                  ${pergunta.obrigatoria ? '<span style="color:#dc3545;margin-left:8px;">*</span>' : ''}
+                  <p style="margin:0.5rem 0 0 0;color:var(--muted);font-size:0.9rem;">
+                    Tipo: ${pergunta.tipoPergunta} | Ordem: ${pergunta.ordem || index + 1}
+                  </p>
+                </div>
+              </div>
+            `;
+            listaPerguntas.appendChild(div);
+          });
+        } else {
+          listaPerguntas.innerHTML = '<p class="muted">Nenhuma pergunta adicionada ainda.</p>';
+        }
+      }
+
+      function ativarEdicao() {
+        document.getElementById('modoVisualizacao').style.display = 'none';
+        document.getElementById('modoEdicao').style.display = 'block';
+        
+        document.getElementById('editTitulo').value = formularioAtual.titulo;
+        document.getElementById('editDescricao').value = formularioAtual.descricao || '';
+        document.getElementById('editStatus').value = formularioAtual.status || 'RASCUNHO';
+      }
+
+      function cancelarEdicao() {
+        document.getElementById('modoEdicao').style.display = 'none';
+        document.getElementById('modoVisualizacao').style.display = 'block';
+      }
+
+      // Salvar edição
+      document.getElementById('formEdicao')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const titulo = document.getElementById('editTitulo').value.trim();
+        const descricao = document.getElementById('editDescricao').value.trim();
+        const status = document.getElementById('editStatus').value;
+        const mensagem = document.getElementById('mensagemEdicao');
+        
+        try {
+          const response = await fetch(`/api/formularios/${formularioId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ titulo, descricao, status })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            mostrarMensagem(mensagem, 'Pesquisa atualizada com sucesso!', 'success');
+            await carregarFormulario();
+            cancelarEdicao();
+          } else {
+            mostrarMensagem(mensagem, data.message || 'Erro ao atualizar.', 'error');
+          }
+        } catch (error) {
+          mostrarMensagem(mensagem, 'Erro ao conectar com o servidor.', 'error');
+        }
+      });
+
+      function adicionarPergunta() {
+        document.getElementById('modalPergunta').style.display = 'flex';
+        document.getElementById('formPergunta').reset();
+        document.getElementById('perguntaOrdem').value = (formularioAtual.perguntas?.length || 0) + 1;
+        document.getElementById('opcoesContainer').style.display = 'none';
+      }
+
+      function fecharModalPergunta() {
+        document.getElementById('modalPergunta').style.display = 'none';
+      }
+
+      // Tipo de pergunta mudou
+      document.getElementById('perguntaTipo')?.addEventListener('change', (e) => {
+        const opcoesContainer = document.getElementById('opcoesContainer');
+        if (e.target.value === 'MULTIPLA_ESCOLHA') {
+          opcoesContainer.style.display = 'block';
+        } else {
+          opcoesContainer.style.display = 'none';
+        }
+      });
+
+      // Adicionar pergunta
+      document.getElementById('formPergunta')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const texto = document.getElementById('perguntaTexto').value.trim();
+        const tipoPergunta = document.getElementById('perguntaTipo').value;
+        const ordem = parseInt(document.getElementById('perguntaOrdem').value);
+        const obrigatoria = document.getElementById('perguntaObrigatoria').checked;
+        const mensagem = document.getElementById('mensagemPergunta');
+        
+        if (!texto) {
+          mostrarMensagem(mensagem, 'Digite o texto da pergunta.', 'error');
+          return;
+        }
+        
+        try {
+          const response = await fetch(`/api/formularios/${formularioId}/perguntas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ texto, tipoPergunta, ordem, obrigatoria })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            mostrarMensagem(mensagem, 'Pergunta adicionada com sucesso!', 'success');
+            setTimeout(async () => {
+              fecharModalPergunta();
+              await carregarFormulario();
+            }, 1000);
+          } else {
+            mostrarMensagem(mensagem, data.message || 'Erro ao adicionar pergunta.', 'error');
+          }
+        } catch (error) {
+          mostrarMensagem(mensagem, 'Erro ao conectar com o servidor.', 'error');
+        }
+      });
+
+      function mostrarMensagem(elemento, texto, tipo) {
+        elemento.textContent = texto;
+        elemento.style.display = 'block';
+        elemento.style.background = tipo === 'success' ? '#d4edda' : '#f8d7da';
+        elemento.style.color = tipo === 'success' ? '#155724' : '#721c24';
+        elemento.style.border = `1px solid ${tipo === 'success' ? '#c3e6cb' : '#f5c6cb'}`;
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    </script>
+  </body>
+</html>
+
+

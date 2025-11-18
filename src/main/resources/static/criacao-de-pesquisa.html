@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CARE — Criação de pesquisa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="criacao">
+    <header class="site-header">
+      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav" aria-label="Principal">
+        <a href="index.html">Início</a>
+        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
+        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
+        <a href="seguindo.html" class="requires-auth">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
+        <a href="perfil.html" class="requires-auth">Perfil</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth" aria-current="page">Criação de pesquisa</a>
+        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
+    </header>
+
+    <main class="container page-shell">
+      <section class="page-title">
+        <h1>Criação de pesquisa</h1>
+        <p class="muted">Disponível para contas do tipo <strong>Empresa</strong>.</p>
+      </section>
+
+      <section class="card" data-show-if="empresa">
+        <div id="mensagem" style="display:none; padding:12px; margin-bottom:16px; border-radius:8px;"></div>
+        <form class="form" id="formPesquisa">
+          <label>
+            <span>Título</span>
+            <input type="text" name="titulo" id="titulo" placeholder="Título da pesquisa" required />
+          </label>
+          <label>
+            <span>Descrição</span>
+            <textarea name="descricao" id="descricao" placeholder="Breve descrição" rows="3" required></textarea>
+          </label>
+          <button type="submit" class="btn btn-primary" id="btnSubmit">Publicar</button>
+        </form>
+      </section>
+
+      <section class="card" data-show-if="cliente">
+        <p class="muted">Esta seção é exclusiva para empresas.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="assets/app.js"></script>
+    <script>
+      // Conectar formulário de criação de pesquisa ao backend
+      (function() {
+        const formPesquisa = document.getElementById('formPesquisa');
+        const mensagem = document.getElementById('mensagem');
+        
+        if (formPesquisa) {
+          formPesquisa.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const titulo = document.getElementById('titulo').value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            const btnSubmit = document.getElementById('btnSubmit');
+            
+            if (!titulo) {
+              mostrarMensagem('Por favor, preencha o título.', 'error');
+              return;
+            }
+            
+            const originalText = btnSubmit.textContent;
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Publicando...';
+            
+            try {
+              const response = await fetch('/api/formularios', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ titulo, descricao })
+              });
+              
+              const data = await response.json();
+              
+              if (data.success) {
+                mostrarMensagem('Pesquisa criada com sucesso!', 'success');
+                formPesquisa.reset();
+                setTimeout(() => {
+                  window.location.href = 'minhas-pesquisas.html';
+                }, 1500);
+              } else {
+                mostrarMensagem(data.message || 'Erro ao criar pesquisa. Tente novamente.', 'error');
+              }
+            } catch (error) {
+              console.error('Erro:', error);
+              mostrarMensagem('Erro ao conectar com o servidor. Tente novamente.', 'error');
+            } finally {
+              btnSubmit.disabled = false;
+              btnSubmit.textContent = originalText;
+            }
+          });
+        }
+        
+        function mostrarMensagem(texto, tipo) {
+          mensagem.textContent = texto;
+          mensagem.style.display = 'block';
+          mensagem.style.background = tipo === 'success' ? '#d4edda' : '#f8d7da';
+          mensagem.style.color = tipo === 'success' ? '#155724' : '#721c24';
+          mensagem.style.border = `1px solid ${tipo === 'success' ? '#c3e6cb' : '#f5c6cb'}`;
+          
+          setTimeout(() => {
+            mensagem.style.display = 'none';
+          }, 5000);
+        }
+      })();
+    </script>
+  </body>
+  </html>
+

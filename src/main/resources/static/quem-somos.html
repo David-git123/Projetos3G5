@@ -1,9 +1,9 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Ajuda</title>
+    <title>CARE — Quem somos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,12 +18,12 @@
     />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
-  <body data-page="ajuda">
+  <body data-page="about">
     <header class="site-header">
       <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
       <nav class="main-nav" aria-label="Principal">
         <a href="index.html">Início</a>
-        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
+        <a href="quem-somos.html" class="requires-guest" aria-current="page">Quem somos</a>
         <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
         <a href="seguindo.html" class="requires-auth">Seguindo</a>
         <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
@@ -31,30 +31,33 @@
         <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
         <a href="configuracoes.html" class="requires-auth">Configurações</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
+      <nav class="user-nav" aria-label="Acesso">
+        <a class="btn btn-ghost" href="login.html">Log In</a>
+        <a class="btn btn-primary" href="login.html#cadastro">Cadastrar-se</a>
+      </nav>
     </header>
 
     <main class="container page-shell">
       <section class="page-title">
-        <h1>Ajuda</h1>
-        <p>Encontre respostas rápidas e canais de suporte.</p>
+        <h1>Quem somos</h1>
+        <p>Conheça a missão, a visão e os valores da CARE.</p>
       </section>
 
-      <section class="cards-grid flexible">
+      <section class="cards-grid">
         <article class="card">
-          <h3>Como faço login?</h3>
-          <p>
-            Use a página <a href="login.html">Login</a>. Após entrar, os itens Seguindo, Minhas Pesquisas, Perfil,
-            Configurações e Criação de pesquisa ficam disponíveis.
-          </p>
+          <div class="ph" role="presentation"></div>
+          <h3>Missão</h3>
+          <p>Nossa missão é cuidar das pessoas por meio de conexões mais humanas.</p>
         </article>
         <article class="card">
-          <h3>Não consigo acessar uma página</h3>
-          <p>Algumas páginas exigem autenticação. Faça login e você será redirecionado automaticamente.</p>
+          <div class="ph" role="presentation"></div>
+          <h3>Visão</h3>
+          <p>Construir um ecossistema onde informação e suporte estejam ao alcance de todos.</p>
         </article>
         <article class="card">
-          <h3>Contato</h3>
-          <p>Envie um e-mail para suporte@care.exemplo</p>
+          <div class="ph" role="presentation"></div>
+          <h3>Valores</h3>
+          <p>Transparência, empatia, inclusão e inovação contínua.</p>
         </article>
       </section>
     </main>
@@ -71,3 +74,5 @@
     <script src="assets/app.js"></script>
   </body>
   </html>
+
+

@@ -1,9 +1,9 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Perfil</title>
+    <title>CARE — Ajuda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,7 +18,7 @@
     />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
-  <body data-page="perfil">
+  <body data-page="ajuda">
     <header class="site-header">
       <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
       <nav class="main-nav" aria-label="Principal">
@@ -27,7 +27,7 @@
         <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
         <a href="seguindo.html" class="requires-auth">Seguindo</a>
         <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth" aria-current="page">Perfil</a>
+        <a href="perfil.html" class="requires-auth">Perfil</a>
         <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
         <a href="configuracoes.html" class="requires-auth">Configurações</a>
       </nav>
@@ -36,40 +36,27 @@
 
     <main class="container page-shell">
       <section class="page-title">
-        <h1>Perfil</h1>
+        <h1>Ajuda</h1>
+        <p>Encontre respostas rápidas e canais de suporte.</p>
       </section>
 
-      <div class="layout with-sidebar">
-        <aside class="sidebar" aria-label="Seções do perfil">
-          <ul>
-            <li><a href="#info" class="active">Minhas informações</a></li>
-            <li><a href="#empresas">Empresas que participo</a></li>
-            <li><a href="#historico">Histórico</a></li>
-          </ul>
-        </aside>
-
-        <section class="cards-grid flexible">
-          <article id="info" class="card">
-            <h3>Minhas informações</h3>
-            <p class="muted">Dados básicos do seu perfil (mock).</p>
-            <ul>
-              <li><strong>Nome:</strong> <span data-bind="user-name">—</span></li>
-              <li><strong>E-mail:</strong> <span data-bind="user-email">—</span></li>
-              <li><strong>Tipo:</strong> <span data-bind="user-role">—</span></li>
-            </ul>
-          </article>
-          <article id="empresas" class="card">
-            <h3>Empresas que participo</h3>
-            <p class="muted">Lista de organizações vinculadas ao seu usuário.</p>
-            <div class="ph" style="height:140px"></div>
-          </article>
-          <article id="historico" class="card">
-            <h3>Histórico</h3>
-            <p class="muted">Atividades recentes na plataforma.</p>
-            <div class="ph" style="height:140px"></div>
-          </article>
-        </section>
-      </div>
+      <section class="cards-grid flexible">
+        <article class="card">
+          <h3>Como faço login?</h3>
+          <p>
+            Use a página <a href="login.html">Login</a>. Após entrar, os itens Seguindo, Minhas Pesquisas, Perfil,
+            Configurações e Criação de pesquisa ficam disponíveis.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Não consigo acessar uma página</h3>
+          <p>Algumas páginas exigem autenticação. Faça login e você será redirecionado automaticamente.</p>
+        </article>
+        <article class="card">
+          <h3>Contato</h3>
+          <p>Envie um e-mail para suporte@care.exemplo</p>
+        </article>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -84,3 +71,5 @@
     <script src="assets/app.js"></script>
   </body>
   </html>
+
+

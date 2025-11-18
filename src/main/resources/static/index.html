@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
@@ -75,7 +75,7 @@
         <article class="card">
           <div class="ph" role="presentation"></div>
           <h3>Minhas Pesquisas</h3>
-          <p>Acesse e gerencie suas consultas salvas.</p>
+          <p id="infoPesquisas">Carregando...</p>
           <a class="card-link" href="minhas-pesquisas.html">Abrir</a>
         </article>
         <article class="card">
@@ -95,15 +95,15 @@
         </article>
         <article class="card">
           <div class="ph" role="presentation"></div>
-          <h3>Perfil</h3>
-          <p>Gerencie os dados da sua empresa.</p>
-          <a class="card-link" href="perfil.html">Abrir</a>
+          <h3>Minhas Pesquisas</h3>
+          <p id="infoPesquisasEmpresa">Carregando...</p>
+          <a class="card-link" href="minhas-pesquisas.html">Ver todas</a>
         </article>
         <article class="card">
           <div class="ph" role="presentation"></div>
-          <h3>Configurações</h3>
-          <p>Preferências da conta e aparência.</p>
-          <a class="card-link" href="configuracoes.html">Abrir</a>
+          <h3>Perfil</h3>
+          <p>Gerencie os dados da sua empresa.</p>
+          <a class="card-link" href="perfil.html">Abrir</a>
         </article>
       </section>
     </main>
@@ -118,5 +118,41 @@
       crossorigin="anonymous"
     ></script>
     <script src="assets/app.js"></script>
+    <script>
+      // Carregar estatísticas do backend quando usuário estiver logado
+      (async function() {
+        const user = JSON.parse(localStorage.getItem('care:user') || 'null');
+        if (!user) return;
+
+        // Carregar número de pesquisas
+        try {
+          const response = await fetch('/api/formularios', { credentials: 'include' });
+          const data = await response.json();
+          
+          if (data.success && data.formularios) {
+            const total = data.formularios.length;
+            const ativas = data.formularios.filter(f => f.status === 'ATIVO').length;
+            
+            const infoCliente = document.getElementById('infoPesquisas');
+            const infoEmpresa = document.getElementById('infoPesquisasEmpresa');
+            
+            if (infoCliente) {
+              infoCliente.textContent = total > 0 
+                ? `Você tem ${total} pesquisa${total > 1 ? 's' : ''} salva${total > 1 ? 's' : ''}.`
+                : 'Você ainda não tem pesquisas salvas.';
+            }
+            
+            if (infoEmpresa) {
+              infoEmpresa.textContent = total > 0
+                ? `${total} pesquisa${total > 1 ? 's' : ''} criada${total > 1 ? 's' : ''}, ${ativas} ativa${ativas > 1 ? 's' : ''}.`
+                : 'Crie sua primeira pesquisa!';
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao carregar estatísticas:', error);
+        }
+      })();
+    </script>
   </body>
   </html>
+

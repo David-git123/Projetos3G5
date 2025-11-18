@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
@@ -53,26 +53,17 @@
             <li><a href="#impacto">Impacto social</a></li>
           </ul>
         </aside>
-        <section class="cards-grid flexible" id="lista-parceiras" aria-live="polite">
-          <article class="card">
-            <div class="ph" role="presentation"></div>
-            <h3>Parceira A</h3>
-            <p>Descrição breve da empresa parceira e sua colaboração.</p>
-            <a class="card-link" href="#">Visitar site</a>
-          </article>
-          <article class="card">
-            <div class="ph" role="presentation"></div>
-            <h3>Parceira B</h3>
-            <p>Descrição breve da empresa parceira e sua colaboração.</p>
-            <a class="card-link" href="#">Visitar site</a>
-          </article>
-          <article class="card">
-            <div class="ph" role="presentation"></div>
-            <h3>Parceira C</h3>
-            <p>Descrição breve da empresa parceira e sua colaboração.</p>
-            <a class="card-link" href="#">Visitar site</a>
-          </article>
+        <div id="loading" style="text-align:center; padding:2rem;">
+          <p class="muted">Carregando empresas...</p>
+        </div>
+        
+        <section class="cards-grid flexible" id="lista-parceiras" aria-live="polite" style="display:none;">
+          <!-- Empresas serão inseridas aqui via JavaScript -->
         </section>
+        
+        <div id="emptyState" style="display:none; text-align:center; padding:3rem;">
+          <p class="muted">Nenhuma empresa cadastrada ainda.</p>
+        </div>
       </div>
     </main>
 
@@ -86,5 +77,29 @@
       crossorigin="anonymous"
     ></script>
     <script src="assets/app.js"></script>
+    <script>
+      // Listar empresas (usuários do tipo ADMINISTRADOR)
+      (async function() {
+        const loading = document.getElementById('loading');
+        const listaParceiras = document.getElementById('lista-parceiras');
+        const emptyState = document.getElementById('emptyState');
+        
+        try {
+          // Buscar todas as empresas (endpoint seria criado no backend)
+          // Por enquanto, vamos mostrar uma mensagem
+          loading.style.display = 'none';
+          emptyState.style.display = 'block';
+          emptyState.innerHTML = `
+            <p class="muted">Funcionalidade de listagem de empresas será implementada em breve.</p>
+            <p class="muted" style="margin-top:1rem;">As empresas cadastradas aparecerão aqui.</p>
+          `;
+        } catch (error) {
+          console.error('Erro ao carregar empresas:', error);
+          loading.style.display = 'none';
+          emptyState.style.display = 'block';
+        }
+      })();
+    </script>
   </body>
   </html>
+

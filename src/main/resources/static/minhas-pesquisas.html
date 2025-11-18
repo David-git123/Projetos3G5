@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CARE — Minhas Pesquisas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="pesquisas">
+    <header class="site-header">
+      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav" aria-label="Principal">
+        <a href="index.html">Início</a>
+        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
+        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
+        <a href="seguindo.html" class="requires-auth">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth" aria-current="page">Minhas Pesquisas</a>
+        <a href="perfil.html" class="requires-auth">Perfil</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
+        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
+    </header>
+
+    <main class="container page-shell">
+      <section class="page-title">
+        <h1>Minhas Pesquisas</h1>
+        <p>Seus itens salvos e consultas recentes.</p>
+      </section>
+
+      <div id="loading" style="text-align:center; padding:2rem;">
+        <p class="muted">Carregando suas pesquisas...</p>
+      </div>
+      
+      <section class="cards-grid flexible" id="listaFormularios" style="display:none;">
+        <!-- Formulários serão inseridos aqui via JavaScript -->
+      </section>
+      
+      <div id="emptyState" style="display:none; text-align:center; padding:3rem;">
+        <p class="muted">Você ainda não criou nenhuma pesquisa.</p>
+        <a href="criacao-de-pesquisa.html" class="btn btn-primary" style="margin-top:1rem;">Criar primeira pesquisa</a>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="assets/app.js"></script>
+    <script>
+      // Carregar formulários do usuário
+      (async function() {
+        const loading = document.getElementById('loading');
+        const listaFormularios = document.getElementById('listaFormularios');
+        const emptyState = document.getElementById('emptyState');
+        
+        try {
+          const response = await fetch('/api/formularios', {
+            credentials: 'include'
+          });
+          
+          const data = await response.json();
+          loading.style.display = 'none';
+          
+          if (data.success && data.formularios && data.formularios.length > 0) {
+            listaFormularios.style.display = 'grid';
+            listaFormularios.innerHTML = '';
+            
+            data.formularios.forEach(formulario => {
+              const card = document.createElement('article');
+              card.className = 'card';
+              
+              const statusBadge = formulario.status === 'ATIVO' 
+                ? '<span style="background:#d4edda;color:#155724;padding:4px 8px;border-radius:4px;font-size:0.85rem;margin-bottom:8px;display:inline-block;">Ativo</span>'
+                : formulario.status === 'RASCUNHO'
+                ? '<span style="background:#fff3cd;color:#856404;padding:4px 8px;border-radius:4px;font-size:0.85rem;margin-bottom:8px;display:inline-block;">Rascunho</span>'
+                : '';
+              
+              card.innerHTML = `
+                <div class="ph"></div>
+                <h3>${escapeHtml(formulario.titulo)}</h3>
+                ${statusBadge}
+                <p>${formulario.descricao || 'Sem descrição'}</p>
+                <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+                  <a class="card-link" href="#" onclick="verFormulario(${formulario.id}); return false;">Ver detalhes</a>
+                  <a class="card-link" href="#" onclick="editarFormulario(${formulario.id}); return false;" style="color:var(--muted);">Editar</a>
+                  <a class="card-link" href="#" onclick="removerFormulario(${formulario.id}, '${escapeHtml(formulario.titulo)}'); return false;" style="color:#dc3545;">Remover</a>
+                </div>
+              `;
+              
+              listaFormularios.appendChild(card);
+            });
+          } else {
+            emptyState.style.display = 'block';
+          }
+        } catch (error) {
+          console.error('Erro ao carregar formulários:', error);
+          loading.style.display = 'none';
+          emptyState.style.display = 'block';
+          emptyState.innerHTML = '<p class="muted">Erro ao carregar pesquisas. Tente novamente mais tarde.</p>';
+        }
+      })();
+      
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      async function removerFormulario(id, titulo) {
+        if (!confirm(`Tem certeza que deseja remover a pesquisa "${titulo}"? Esta ação não pode ser desfeita.`)) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/formularios/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            alert('Pesquisa removida com sucesso!');
+            location.reload();
+          } else {
+            alert(data.message || 'Erro ao remover pesquisa.');
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          alert('Erro ao conectar com o servidor.');
+        }
+      }
+      
+      function verFormulario(id) {
+        window.location.href = `detalhes-formulario.html?id=${id}`;
+      }
+      
+      function editarFormulario(id) {
+        window.location.href = `detalhes-formulario.html?id=${id}`;
+      }
+    </script>
+  </body>
+  </html>
+

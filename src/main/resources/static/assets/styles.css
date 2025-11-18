@@ -418,19 +418,31 @@ a:hover {
   color: var(--text);
 }
 .form input,
-.form select {
+.form select,
+.form textarea {
   padding: 0.9rem 1rem;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(15, 23, 42, 0.08);
   background: rgba(255, 255, 255, 0.9);
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+  width: 100%;
 }
 .form input:focus,
-.form select:focus {
+.form select:focus,
+.form textarea:focus {
   border-color: rgba(37, 99, 235, 0.4);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
   outline: none;
+}
+.form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.form input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
 }
 .providers {
   margin-top: var(--space-4);
@@ -498,3 +510,4 @@ a:hover {
     min-height: auto;
   }
 }
+

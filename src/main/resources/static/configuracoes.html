@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CARE — Configurações</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="config">
+    <header class="site-header">
+      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav" aria-label="Principal">
+        <a href="index.html">Início</a>
+        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
+        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
+        <a href="seguindo.html" class="requires-auth">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
+        <a href="perfil.html" class="requires-auth">Perfil</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
+        <a href="configuracoes.html" class="requires-auth" aria-current="page">Configurações</a>
+      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
+    </header>
+
+    <main class="container page-shell">
+      <section class="page-title">
+        <h1>Configurações</h1>
+      </section>
+
+      <div class="layout with-sidebar">
+        <aside class="sidebar" aria-label="Seções de configurações">
+          <ul>
+            <li><a href="#temas" class="active">Temas</a></li>
+            <li><a href="#suporte">Suporte</a></li>
+            <li><a href="#informacoes">Informações</a></li>
+            <li><a href="#versao">Versão</a></li>
+          </ul>
+        </aside>
+        <section class="cards-grid flexible">
+          <article id="senha" class="card">
+            <h3>Alterar Senha</h3>
+            <p class="muted">Atualize sua senha de acesso.</p>
+            <div id="mensagemSenha" style="display:none; padding:12px; margin-bottom:16px; border-radius:8px;"></div>
+            <form class="form" id="formSenha" style="margin-top:1rem;">
+              <label>
+                <span>Senha atual</span>
+                <input type="password" id="senhaAtual" placeholder="Digite sua senha atual" required />
+              </label>
+              <label>
+                <span>Nova senha</span>
+                <input type="password" id="novaSenha" placeholder="Digite a nova senha" required minlength="6" />
+              </label>
+              <label>
+                <span>Confirmar nova senha</span>
+                <input type="password" id="confirmarSenha" placeholder="Digite novamente" required />
+              </label>
+              <button type="submit" class="btn btn-primary" id="btnSalvarSenha">Alterar senha</button>
+            </form>
+          </article>
+          <article id="temas" class="card">
+            <h3>Tema</h3>
+            <p class="muted">Troca simples de tema.</p>
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-ghost" type="button" data-theme="light">Claro</button>
+              <button class="btn btn-ghost" type="button" data-theme="dark">Escuro</button>
+            </div>
+          </article>
+          <article id="suporte" class="card">
+            <h3>Suporte</h3>
+            <p class="muted">Canais de atendimento e FAQ.</p>
+            <div class="ph" style="height:120px"></div>
+          </article>
+          <article id="informacoes" class="card">
+            <h3>Informações</h3>
+            <p class="muted">Notas sobre a plataforma e a CARE.</p>
+            <div class="ph" style="height:120px"></div>
+          </article>
+          <article id="versao" class="card">
+            <h3>Versão</h3>
+            <p class="muted">v0.1.0 (front-end estático para navegação).</p>
+            <p class="muted">Precisa de ajuda? <a href="ajuda.html">Acesse a Ajuda</a>.</p>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="assets/app.js"></script>
+    <script>
+      // Alterar senha
+      (function() {
+        const formSenha = document.getElementById('formSenha');
+        const mensagemSenha = document.getElementById('mensagemSenha');
+        
+        if (formSenha) {
+          formSenha.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const senhaAtual = document.getElementById('senhaAtual').value;
+            const novaSenha = document.getElementById('novaSenha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+            const btnSalvar = document.getElementById('btnSalvarSenha');
+            
+            if (novaSenha.length < 6) {
+              mostrarMensagem('A nova senha deve ter pelo menos 6 caracteres.', 'error');
+              return;
+            }
+            
+            if (novaSenha !== confirmarSenha) {
+              mostrarMensagem('As senhas não coincidem.', 'error');
+              return;
+            }
+            
+            const originalText = btnSalvar.textContent;
+            btnSalvar.disabled = true;
+            btnSalvar.textContent = 'Alterando...';
+            
+            try {
+              // Primeiro, verificar senha atual fazendo login
+              const user = JSON.parse(localStorage.getItem('care:user') || '{}');
+              
+              const responseLogin = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email: user.email, password: senhaAtual })
+              });
+              
+              const dataLogin = await responseLogin.json();
+              
+              if (!dataLogin.success) {
+                mostrarMensagem('Senha atual incorreta.', 'error');
+                btnSalvar.disabled = false;
+                btnSalvar.textContent = originalText;
+                return;
+              }
+              
+              // Alterar senha
+              const responseSenha = await fetch('/api/auth/user/password', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ senhaAtual, novaSenha })
+              });
+              
+              const dataSenha = await responseSenha.json();
+              
+              if (dataSenha.success) {
+                mostrarMensagem('Senha alterada com sucesso!', 'success');
+                formSenha.reset();
+              } else {
+                mostrarMensagem(dataSenha.message || 'Erro ao alterar senha.', 'error');
+              }
+              
+            } catch (error) {
+              console.error('Erro:', error);
+              mostrarMensagem('Erro ao conectar com o servidor.', 'error');
+            } finally {
+              btnSalvar.disabled = false;
+              btnSalvar.textContent = originalText;
+            }
+          });
+        }
+        
+        function mostrarMensagem(texto, tipo) {
+          mensagemSenha.textContent = texto;
+          mensagemSenha.style.display = 'block';
+          mensagemSenha.style.background = tipo === 'success' ? '#d4edda' : '#f8d7da';
+          mensagemSenha.style.color = tipo === 'success' ? '#155724' : '#721c24';
+          mensagemSenha.style.border = `1px solid ${tipo === 'success' ? '#c3e6cb' : '#f5c6cb'}`;
+          
+          setTimeout(() => {
+            mensagemSenha.style.display = 'none';
+          }, 5000);
+        }
+      })();
+    </script>
+  </body>
+  </html>
+
