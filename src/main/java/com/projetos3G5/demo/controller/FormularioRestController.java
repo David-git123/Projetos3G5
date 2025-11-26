@@ -11,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -97,6 +94,21 @@ public class FormularioRestController {
         return ResponseEntity.ok(response);
     }
 
+    // Link público para visualizar formulário ativo
+    @GetMapping("/public/{id}")
+    public ResponseEntity<Map<String, Object>> obterFormularioPublico(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Formulario> formularioOpt = formularioService.buscarPublico(id);
+        if (formularioOpt.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Formulário não encontrado ou inativo");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        response.put("success", true);
+        response.put("formulario", toMap(formularioOpt.get()));
+        return ResponseEntity.ok(response);
+    }
+
     // Listar formulários do usuário
     @GetMapping
     public ResponseEntity<Map<String, Object>> listarFormularios(HttpSession session) {
@@ -124,6 +136,24 @@ public class FormularioRestController {
         response.put("success", true);
         response.put("formularios", formulariosMap);
         response.put("message", formulariosMap.isEmpty() ? "Nenhum formulário encontrado" : "Formulários listados com sucesso");
+        return ResponseEntity.ok(response);
+    }
+
+    // Formularios recebidos (destinatários)
+    @GetMapping("/recebidos")
+    public ResponseEntity<Map<String, Object>> listarRecebidos(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null) {
+            response.put("success", false);
+            response.put("message", "Usuário não autenticado");
+            response.put("formularios", List.of());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        List<Formulario> forms = formularioService.listarRecebidos(usuarioId);
+        List<Map<String, Object>> formulariosMap = forms.stream().map(this::toMap).collect(Collectors.toList());
+        response.put("success", true);
+        response.put("formularios", formulariosMap);
         return ResponseEntity.ok(response);
     }
 
@@ -254,6 +284,111 @@ public class FormularioRestController {
             response.put("message", "Erro ao adicionar pergunta");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    @PostMapping("/{id}/despublicar")
+    public ResponseEntity<Map<String, Object>> despublicar(
+            @PathVariable Long id,
+            HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null) {
+          response.put("success", false);
+          response.put("message", "Usuário não autenticado");
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        boolean ok = formularioService.despublicar(id, usuarioId);
+        response.put("success", ok);
+        response.put("message", ok ? "Publicação removida e movida para rascunho." : "Não foi possível despublicar.");
+        return ok ? ResponseEntity.ok(response) : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @PostMapping("/{id}/recuperar")
+    public ResponseEntity<Map<String, Object>> recuperar(
+            @PathVariable Long id,
+            HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null) {
+          response.put("success", false);
+          response.put("message", "Usuário não autenticado");
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        boolean ok = formularioService.recuperarFormulario(id, usuarioId);
+        response.put("success", ok);
+        response.put("message", ok ? "Formulário recuperado para rascunho." : "Não foi possível recuperar.");
+        return ok ? ResponseEntity.ok(response) : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // Atribuir destinatários (selecionar usuários para envio)
+    @PostMapping("/{id}/destinatarios")
+    public ResponseEntity<Map<String, Object>> atribuirDestinatarios(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body,
+            HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null) {
+            response.put("success", false);
+            response.put("message", "Usuário não autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        if (!formularioService.isAdministrador(usuarioId)) {
+            response.put("success", false);
+            response.put("message", "Apenas administradores podem atribuir destinatários");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
+        boolean selecionarTodos = Boolean.TRUE.equals(body.get("selecionarTodos"));
+        List<Integer> ids = (List<Integer>) body.getOrDefault("usuarioIds", List.of());
+        List<Long> destinatariosIds = ids.stream().map(Integer::longValue).collect(Collectors.toList());
+
+        var dests = formularioService.atribuirDestinatarios(id, usuarioId, destinatariosIds, selecionarTodos);
+        response.put("success", true);
+        response.put("destinatarios", dests.stream().map(d -> Map.of(
+                "id", d.getId(),
+                "usuarioId", d.getDestinatario().getId(),
+                "nome", d.getDestinatario().getNome(),
+                "email", d.getDestinatario().getEmail()
+        )));
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/destinatarios")
+    public ResponseEntity<Map<String, Object>> listarDestinatarios(@PathVariable Long id, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null) {
+            response.put("success", false);
+            response.put("message", "Usuário não autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        var dests = formularioService.listarDestinatarios(id, usuarioId);
+        response.put("success", true);
+        response.put("destinatarios", dests.stream().map(d -> Map.of(
+                "id", d.getId(),
+                "usuarioId", d.getDestinatario().getId(),
+                "nome", d.getDestinatario().getNome(),
+                "email", d.getDestinatario().getEmail()
+        )));
+        return ResponseEntity.ok(response);
+    }
+
+    // Responder formulário (público ou autenticado)
+    @PostMapping({"/{id}/respostas", "/public/{id}/respostas"})
+    public ResponseEntity<Map<String, Object>> responder(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body,
+            HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        String respostasJson = body.get("respostasJson") != null ? body.get("respostasJson").toString() : "{}";
+        String email = body.get("email") != null ? body.get("email").toString() : null;
+
+        boolean ok = formularioService.salvarRespostaPublica(id, usuarioId, email, respostasJson);
+        response.put("success", ok);
+        response.put("message", ok ? "Resposta registrada" : "Não foi possível registrar a resposta");
+        return ok ? ResponseEntity.ok(response) : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     // Helper para converter Formulario para Map

@@ -25,86 +25,49 @@
         <a href="index.html">Início</a>
         <a href="quem-somos.html" class="requires-guest">Quem somos</a>
         <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth">Perfil</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
-        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
+        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
+        <a href="login.html" class="requires-guest">Login</a>
+        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso">
-        <a class="btn btn-ghost" href="login.html">Log In</a>
-        <a class="btn btn-primary" href="login.html#cadastro">Cadastrar-se</a>
-      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="container page-shell" id="conteudo">
-      <section class="hero">
-        <h1 data-show-if="guest">Bem-vindo à CARE</h1>
-        <h1 data-show-if="logged">Bem-vindo, <span data-bind="user-name">Usuário</span></h1>
-        <p>Conectando pessoas, empresas e oportunidades com simplicidade e cuidado.</p>
+    <main class="home-shell" id="conteudo">
+      <section class="home-intro">
+        <h1>Conectando pessoas e empresas com propósito</h1>
+        <p>Descubra oportunidades, acompanhe iniciativas e participe de pesquisas que fazem a diferença.</p>
       </section>
-
-      <section class="cards-grid" aria-label="Destaques públicos" data-show-if="guest">
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Programa 1</h3>
-          <p>Informações resumidas sobre um programa em destaque.</p>
-          <a class="card-link" href="quem-somos.html">Saiba mais</a>
+      <section class="home-cards" aria-label="Destaques">
+        <article class="tile">
+          <div class="tile-img" role="presentation"></div>
+          <div class="tile-body">
+            <h3>Empresa</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+            <a class="tile-link" href="#">Continuar lendo...</a>
+          </div>
         </article>
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Programa 2</h3>
-          <p>Algumas linhas de texto explicando o benefício.</p>
-          <a class="card-link" href="empresas.html">Ver empresas</a>
+        <article class="tile">
+          <div class="tile-img" role="presentation">
+            <span class="tile-badge">A</span>
+          </div>
+          <div class="tile-body">
+            <h3>Empresa</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+            <a class="tile-link" href="#">Continuar lendo...</a>
+          </div>
         </article>
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Programa 3</h3>
-          <p>Outro conteúdo em destaque para navegação rápida.</p>
-          <a class="card-link" href="login.html">Acessar</a>
+        <article class="tile">
+          <div class="tile-img" role="presentation"></div>
+          <div class="tile-body">
+            <h3>Empresa</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+            <a class="tile-link" href="#">Continuar lendo...</a>
+          </div>
         </article>
-      </section>
-
-      <section class="cards-grid" aria-label="Atalhos (cliente)" data-show-if="cliente">
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Seguindo</h3>
-          <p>Acompanhe atualizações das empresas que você segue.</p>
-          <a class="card-link" href="seguindo.html">Abrir</a>
-        </article>
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Minhas Pesquisas</h3>
-          <p id="infoPesquisas">Carregando...</p>
-          <a class="card-link" href="minhas-pesquisas.html">Abrir</a>
-        </article>
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Perfil</h3>
-          <p>Ajuste suas informações pessoais.</p>
-          <a class="card-link" href="perfil.html">Abrir</a>
-        </article>
-      </section>
-
-      <section class="cards-grid" aria-label="Atalhos (empresa)" data-show-if="empresa">
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Criação de pesquisa</h3>
-          <p>Publique uma nova pesquisa para os clientes.</p>
-          <a class="card-link" href="criacao-de-pesquisa.html">Começar</a>
-        </article>
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Minhas Pesquisas</h3>
-          <p id="infoPesquisasEmpresa">Carregando...</p>
-          <a class="card-link" href="minhas-pesquisas.html">Ver todas</a>
-        </article>
-        <article class="card">
-          <div class="ph" role="presentation"></div>
-          <h3>Perfil</h3>
-          <p>Gerencie os dados da sua empresa.</p>
-          <a class="card-link" href="perfil.html">Abrir</a>
-        </article>
+        <button class="tile-next" type="button" aria-label="Próximo">→</button>
       </section>
     </main>
 

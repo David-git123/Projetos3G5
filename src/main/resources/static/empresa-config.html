@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CARE — Configurações (Empresa)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="empresa-config">
+    <header class="site-header">
+      <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav" aria-label="Principal">
+        <a href="empresa-home.html">Início</a>
+        <a href="minhas-postagens.html">Minhas postagens</a>
+        <a href="editar-pesquisa.html">Criar nova pesquisa</a>
+      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
+    </header>
+
+    <main class="empresa-shell two-cols">
+      <aside class="profile-panel">
+        <div class="profile-avatar"></div>
+        <div class="profile-name" data-bind="user-name">Roberto Rodrigues</div>
+        <small class="muted">Configurações</small>
+        <nav class="profile-menu">
+          <a class="active" href="#info">Informações pessoais</a>
+          <a href="#temas">Opções de temas</a>
+          <a href="#privacidade">Privacidade</a>
+          <a href="ajuda.html">Ajuda</a>
+          <a href="#" id="linkSairEmpresa" style="color:#dc3545;">Sair</a>
+        </nav>
+      </aside>
+
+      <section class="profile-details">
+        <div class="profile-header">
+          <div class="profile-avatar small"></div>
+          <div>
+            <div class="muted">Avatar</div>
+            <small class="muted">Clique para trocar o avatar.</small>
+          </div>
+        </div>
+        <div class="profile-field">
+          <label for="nomeEmpresaPerfil">Nome</label>
+          <input id="nomeEmpresaPerfil" type="text" value="Roberto Rodrigues" />
+        </div>
+        <div class="profile-field">
+          <label for="bioEmpresaPerfil">Bio</label>
+          <textarea id="bioEmpresaPerfil" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-primary" type="button">Salvar alterações</button>
+          <button class="btn btn-ghost" type="button">Cancelar</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="assets/app.js"></script>
+    <script>
+      document.getElementById('linkSairEmpresa')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try { await fetch('/api/auth/logout', { method:'POST', credentials:'include' }); } catch(_) {}
+        localStorage.removeItem('care:user');
+        location.href = 'index.html';
+      });
+      (function(){
+        const user = JSON.parse(localStorage.getItem('care:user') || 'null');
+        if (user?.name) {
+          document.querySelectorAll('[data-bind="user-name"]').forEach(el => el.textContent = user.name);
+          const nome = document.getElementById('nomeEmpresaPerfil');
+          if (nome) nome.value = user.name;
+        }
+      })();
+    </script>
+  </body>
+</html>

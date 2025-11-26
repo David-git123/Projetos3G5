@@ -25,34 +25,37 @@
         <a href="index.html">Início</a>
         <a href="quem-somos.html" class="requires-guest">Quem somos</a>
         <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth" aria-current="page">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth">Perfil</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
-        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+        <a href="seguindo.html" class="requires-auth requires-role-cliente" aria-current="page">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
+        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
+        <a href="login.html" class="requires-guest">Login</a>
+        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
       </nav>
       <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="container page-shell">
-      <section class="page-title">
-        <h1>Seguindo</h1>
-        <p>Veja atualizações dos itens e empresas que você segue.</p>
-      </section>
+    <main class="client-shell">
+      <div class="client-search">
+        <span class="icon">🔍</span>
+        <input type="text" placeholder="Buscando alguma empresa?" />
+      </div>
 
-      <section class="cards-grid flexible">
-        <article class="card">
-          <div class="ph" style="height:180px"></div>
-          <h3>Atualização recente</h3>
-          <p>Um resumo rápido de algo novo publicado por uma empresa que você acompanha.</p>
-          <a class="card-link" href="#">Abrir</a>
-        </article>
-        <article class="card">
-          <div class="ph" style="height:180px"></div>
-          <h3>Post importante</h3>
-          <p>Descrição com detalhes do post e chamada para ação.</p>
-          <a class="card-link" href="#">Ler mais</a>
-        </article>
+      <section class="follow-feature">
+        <div class="follow-media">
+          <span class="badge-dot">A</span>
+        </div>
+        <div class="follow-details">
+          <div class="company-avatar"></div>
+          <div>
+            <h3>Empresa</h3>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi scelerisque mattis velit,
+              nec aliquam urna. Aenean sed odio et mauris elementum malesuada. Ut odio dui, auctor nec
+              nibh at, congue convallis erat. Mauris posuere dui sit amet sodales aliquet.
+            </p>
+          </div>
+        </div>
       </section>
     </main>
 

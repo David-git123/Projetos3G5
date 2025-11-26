@@ -97,10 +97,10 @@
     const user = getUser();
     if (user) {
       nav.innerHTML = `
-        <span class="user-chip" title="${user.email}">
+        <a class="user-chip" href="configuracoes.html" title="Configurações">
           <span class="avatar">${initialsFromName(user.name)}</span>
-          <span class="greet">Olá, ${user.name.split(' ')[0]}</span>
-        </span>
+          <span class="greet">${user.name.split(' ')[0]}</span>
+        </a>
         <a class="btn btn-ghost" href="#" id="btnLogout">Sair</a>
       `;
       nav.querySelector('#btnLogout')?.addEventListener('click', async (e) => {
@@ -122,7 +122,46 @@
     renderUserNav();
     updateBindings();
     updateNavVisibility();
+
+    // Redireciona home conforme o papel
+    const user = getUser();
+    const isRootHome = (path === '' || path === 'index.html');
+    if (user && isRootHome) {
+      if (user.role === 'cliente') {
+        location.href = 'cliente-home.html';
+        return;
+      }
+      if (user.role === 'empresa' || user.role === 'administrador') {
+        location.href = 'empresa-home.html';
+        return;
+      }
+    }
   });
+
+  // Rodapé padronizado
+  (function renderFooter() {
+    const footer = document.querySelector('.site-footer');
+    if (!footer) return;
+    const ano = new Date().getFullYear();
+    footer.innerHTML = `
+      <div class="footer-inner">
+        <div class="footer-brand">CARE</div>
+        <div class="footer-links">
+          <a href="quem-somos.html">Sobre</a>
+          <a href="empresas.html">Empresas parceiras</a>
+          <a href="ajuda.html">Ajuda</a>
+          <a href="configuracoes.html">Configurações</a>
+        </div>
+        <div class="footer-social">
+          <span>Siga:</span>
+          <a href="#" aria-label="Instagram">Instagram</a>
+          <a href="#" aria-label="LinkedIn">LinkedIn</a>
+          <a href="#" aria-label="YouTube">YouTube</a>
+        </div>
+        <div class="footer-copy">© ${ano} CARE — Todos os direitos reservados.</div>
+      </div>
+    `;
+  })();
 
   function updateBindings() {
     const u = getUser();
@@ -160,13 +199,42 @@
     document.querySelectorAll('.requires-role-empresa').forEach(el => {
       el.style.display = (u && (u.role === 'empresa' || u.role === 'administrador')) ? '' : 'none';
     });
+    document.querySelectorAll('.requires-role-cliente').forEach(el => {
+      el.style.display = (u && u.role === 'cliente') ? '' : 'none';
+    });
     document.querySelectorAll('.requires-guest').forEach(el => {
       el.style.display = u ? 'none' : '';
     });
+
+    // Ajusta link de "Início" para apontar para a home correta por papel
+    const homeLink = document.querySelector('.main-nav a[href="index.html"]');
+    if (homeLink) {
+      let target = 'index.html';
+      if (u) {
+        if (u.role === 'cliente') target = 'cliente-home.html';
+        else if (u.role === 'empresa' || u.role === 'administrador') target = 'empresa-home.html';
+      }
+      homeLink.setAttribute('href', target);
+      if (target === path || (target === 'index.html' && (path === '' || path === 'index.html'))) {
+        homeLink.setAttribute('aria-current', 'page');
+      } else {
+        homeLink.removeAttribute('aria-current');
+      }
+    }
   }
 
   // Bloqueio de páginas restritas e guarda de links
-  const RESTRICTED = ['perfil.html','configuracoes.html','seguindo.html','minhas-pesquisas.html','criacao-de-pesquisa.html'];
+  const RESTRICTED = [
+    'perfil.html',
+    'configuracoes.html',
+    'seguindo.html',
+    'minhas-pesquisas.html',
+    'criacao-de-pesquisa.html',
+    'minhas-postagens.html',
+    'cliente-home.html',
+    'empresa-home.html',
+    'empresa-config.html'
+  ];
   const isRestrictedPage = RESTRICTED.includes(path);
   const userNow = getUser();
   if (!userNow && isRestrictedPage) {
@@ -176,6 +244,9 @@
 
   // Página exclusiva para empresas
   if (path === 'criacao-de-pesquisa.html' && userNow && userNow.role !== 'empresa' && userNow.role !== 'administrador') {
+    location.href = 'index.html';
+  }
+  if (path === 'minhas-postagens.html' && userNow && userNow.role !== 'empresa' && userNow.role !== 'administrador') {
     location.href = 'index.html';
   }
 
@@ -216,10 +287,16 @@
   linkCadastro?.addEventListener('click', (e) => { e.preventDefault(); mostrarCadastro(); });
   linkLogin?.addEventListener('click', (e) => { e.preventDefault(); mostrarLogin(); });
 
-  // Abre automaticamente a aba de cadastro se o hash indicar
-  if (location.hash === '#cadastro') {
-    mostrarCadastro();
+  // Abre automaticamente a aba correta via hash e responde a mudanças de hash
+  function handleAuthHash() {
+    if (location.hash === '#cadastro') {
+      mostrarCadastro();
+    } else if (location.hash === '#login') {
+      mostrarLogin();
+    }
   }
+  handleAuthHash();
+  window.addEventListener('hashchange', handleAuthHash);
 
   // Submissão de login conectado ao backend
   formLogin?.addEventListener('submit', async (e) => {

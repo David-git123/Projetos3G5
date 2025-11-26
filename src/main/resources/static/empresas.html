@@ -24,47 +24,61 @@
       <nav class="main-nav" aria-label="Principal">
         <a href="index.html">Início</a>
         <a href="quem-somos.html" class="requires-guest">Quem somos</a>
-        <a href="empresas.html" class="requires-guest" aria-current="page">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth">Perfil</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
-        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
+        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
+        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
+        <a href="login.html" class="requires-guest">Login</a>
+        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso">
-        <a class="btn btn-ghost" href="login.html">Log In</a>
-        <a class="btn btn-primary" href="login.html#cadastro">Cadastrar-se</a>
-      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="container page-shell">
-      <section class="page-title">
-        <h1>Empresas parceiras</h1>
-        <p>Conheça organizações que caminham com a CARE.</p>
+    <main class="partners-shell">
+      <section class="partners-grid" aria-label="Empresas parceiras">
+        <!-- placeholders de parceiros -->
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
+        <article class="partner-card">
+          <div class="partner-thumb"></div>
+          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+        </article>
       </section>
-
-      <div class="layout with-sidebar">
-        <aside class="sidebar" aria-label="Categorias">
-          <ul>
-            <li><a href="#todas" class="active">Todas</a></li>
-            <li><a href="#saude">Saúde</a></li>
-            <li><a href="#educacao">Educação</a></li>
-            <li><a href="#tecnologia">Tecnologia</a></li>
-            <li><a href="#impacto">Impacto social</a></li>
-          </ul>
-        </aside>
-        <div id="loading" style="text-align:center; padding:2rem;">
-          <p class="muted">Carregando empresas...</p>
-        </div>
-        
-        <section class="cards-grid flexible" id="lista-parceiras" aria-live="polite" style="display:none;">
-          <!-- Empresas serão inseridas aqui via JavaScript -->
-        </section>
-        
-        <div id="emptyState" style="display:none; text-align:center; padding:3rem;">
-          <p class="muted">Nenhuma empresa cadastrada ainda.</p>
-        </div>
-      </div>
     </main>
 
     <footer class="site-footer">

@@ -25,33 +25,22 @@
         <a href="index.html">Início</a>
         <a href="quem-somos.html" class="requires-guest">Quem somos</a>
         <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth" aria-current="page">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth">Perfil</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
-        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente" aria-current="page">Minhas Pesquisas</a>
+        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
+        <a href="login.html" class="requires-guest">Login</a>
+        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
       </nav>
       <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="container page-shell">
-      <section class="page-title">
-        <h1>Minhas Pesquisas</h1>
-        <p>Seus itens salvos e consultas recentes.</p>
+    <main class="client-shell">
+      <section class="survey-list">
+        <div id="loading" class="muted">Carregando pesquisas...</div>
+        <div id="emptyState" class="muted" style="display:none;">Nenhuma pesquisa recebida.</div>
+        <div id="listaFormularios" class="survey-grid" style="display:none;"></div>
       </section>
-
-      <div id="loading" style="text-align:center; padding:2rem;">
-        <p class="muted">Carregando suas pesquisas...</p>
-      </div>
-      
-      <section class="cards-grid flexible" id="listaFormularios" style="display:none;">
-        <!-- Formulários serão inseridos aqui via JavaScript -->
-      </section>
-      
-      <div id="emptyState" style="display:none; text-align:center; padding:3rem;">
-        <p class="muted">Você ainda não criou nenhuma pesquisa.</p>
-        <a href="criacao-de-pesquisa.html" class="btn btn-primary" style="margin-top:1rem;">Criar primeira pesquisa</a>
-      </div>
     </main>
 
     <footer class="site-footer">
@@ -65,98 +54,40 @@
     ></script>
     <script src="assets/app.js"></script>
     <script>
-      // Carregar formulários do usuário
       (async function() {
         const loading = document.getElementById('loading');
-        const listaFormularios = document.getElementById('listaFormularios');
-        const emptyState = document.getElementById('emptyState');
-        
+        const lista = document.getElementById('listaFormularios');
+        const empty = document.getElementById('emptyState');
         try {
-          const response = await fetch('/api/formularios', {
-            credentials: 'include'
-          });
-          
-          const data = await response.json();
+          const resp = await fetch('/api/formularios/recebidos', { credentials:'include' });
+          const data = await resp.json();
           loading.style.display = 'none';
-          
-          if (data.success && data.formularios && data.formularios.length > 0) {
-            listaFormularios.style.display = 'grid';
-            listaFormularios.innerHTML = '';
-            
-            data.formularios.forEach(formulario => {
-              const card = document.createElement('article');
-              card.className = 'card';
-              
-              const statusBadge = formulario.status === 'ATIVO' 
-                ? '<span style="background:#d4edda;color:#155724;padding:4px 8px;border-radius:4px;font-size:0.85rem;margin-bottom:8px;display:inline-block;">Ativo</span>'
-                : formulario.status === 'RASCUNHO'
-                ? '<span style="background:#fff3cd;color:#856404;padding:4px 8px;border-radius:4px;font-size:0.85rem;margin-bottom:8px;display:inline-block;">Rascunho</span>'
-                : '';
-              
-              card.innerHTML = `
-                <div class="ph"></div>
-                <h3>${escapeHtml(formulario.titulo)}</h3>
-                ${statusBadge}
-                <p>${formulario.descricao || 'Sem descrição'}</p>
-                <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-                  <a class="card-link" href="#" onclick="verFormulario(${formulario.id}); return false;">Ver detalhes</a>
-                  <a class="card-link" href="#" onclick="editarFormulario(${formulario.id}); return false;" style="color:var(--muted);">Editar</a>
-                  <a class="card-link" href="#" onclick="removerFormulario(${formulario.id}, '${escapeHtml(formulario.titulo)}'); return false;" style="color:#dc3545;">Remover</a>
-                </div>
-              `;
-              
-              listaFormularios.appendChild(card);
-            });
-          } else {
-            emptyState.style.display = 'block';
+          if (!data.success || !data.formularios || data.formularios.length === 0) {
+            empty.style.display = 'block';
+            return;
           }
-        } catch (error) {
-          console.error('Erro ao carregar formulários:', error);
+          lista.style.display = 'grid';
+          lista.innerHTML = data.formularios.map(f => `
+            <article class="card">
+              <div class="ph"></div>
+              <h3>${escapeHtml(f.titulo || 'Sem título')}</h3>
+              <p>${escapeHtml(f.descricao || 'Sem descrição')}</p>
+              <a class="card-link" href="responder-formulario.html?id=${f.id}">Responder</a>
+            </article>
+          `).join('');
+        } catch (e) {
           loading.style.display = 'none';
-          emptyState.style.display = 'block';
-          emptyState.innerHTML = '<p class="muted">Erro ao carregar pesquisas. Tente novamente mais tarde.</p>';
+          empty.style.display = 'block';
+          empty.textContent = 'Erro ao carregar pesquisas.';
         }
       })();
-      
+
       function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
-
-      async function removerFormulario(id, titulo) {
-        if (!confirm(`Tem certeza que deseja remover a pesquisa "${titulo}"? Esta ação não pode ser desfeita.`)) {
-          return;
-        }
-
-        try {
-          const response = await fetch(`/api/formularios/${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
-          });
-          
-          const data = await response.json();
-          
-          if (data.success) {
-            alert('Pesquisa removida com sucesso!');
-            location.reload();
-          } else {
-            alert(data.message || 'Erro ao remover pesquisa.');
-          }
-        } catch (error) {
-          console.error('Erro:', error);
-          alert('Erro ao conectar com o servidor.');
-        }
-      }
-      
-      function verFormulario(id) {
-        window.location.href = `detalhes-formulario.html?id=${id}`;
-      }
-      
-      function editarFormulario(id) {
-        window.location.href = `detalhes-formulario.html?id=${id}`;
-      }
     </script>
   </body>
-  </html>
+</html>
 

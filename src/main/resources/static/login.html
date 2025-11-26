@@ -25,21 +25,26 @@
         <a href="index.html">Início</a>
         <a href="quem-somos.html" class="requires-guest">Quem somos</a>
         <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth">Perfil</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
-        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
+        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
+        <a href="login.html" class="requires-guest" aria-current="page">Login</a>
+        <a href="#cadastro" class="requires-guest" id="abrirCadastro">Cadastre-se</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso">
-        <a class="btn btn-ghost" href="login.html" aria-current="page">Log In</a>
-        <a class="btn btn-primary" href="#cadastro" id="abrirCadastro">Cadastrar-se</a>
-      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="container page-shell auth">
-      <section class="auth-panel" aria-labelledby="tituloAuth">
-        <h1 id="tituloAuth">Acesse sua conta</h1>
+    <main class="login-shell">
+      <section class="login-info">
+        <div class="login-logo">CARE</div>
+        <h1>Entre e continue de onde parou</h1>
+        <p>Gerencie pesquisas, acompanhe empresas parceiras e mantenha seu perfil atualizado.</p>
+      </section>
+
+      <section class="auth-card" aria-labelledby="tituloAuth">
+        <button class="auth-back" onclick="history.back()" aria-label="Voltar">←</button>
+        <h1 id="tituloAuth">Log in</h1>
 
         <form class="form" id="formLogin" autocomplete="on">
           <label>
@@ -58,25 +63,18 @@
 
         <form class="form hidden" id="formCadastro" autocomplete="on">
           <label>
-            <span>Nome completo</span>
-            <input type="text" name="nome" placeholder="Seu nome" required />
-          </label>
-          <label>
             <span>E-mail</span>
             <input type="email" name="email" placeholder="seu@email.com" required />
-          </label>
-          <label>
-            <span>Tipo de conta</span>
-            <select name="tipo" required>
-              <option value="cliente" selected>Cliente</option>
-              <option value="empresa">Empresa</option>
-            </select>
           </label>
           <label>
             <span>Senha</span>
             <input type="password" name="password" placeholder="Crie uma senha" required />
           </label>
-          <button class="btn btn-primary btn-block" type="submit">Criar conta</button>
+          <label>
+            <span>Confirmar senha</span>
+            <input type="password" name="confirmPassword" placeholder="Repita a senha" required />
+          </label>
+          <button class="btn btn-primary btn-block" type="submit">Cadastrar-se</button>
           <div class="muted small center">
             <span>Já possui conta? </span><a href="#login" id="linkLogin">Entrar</a>
           </div>

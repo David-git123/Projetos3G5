@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RepoCadastro extends JpaRepository<Pessoa, Long>{
     public boolean existsByEmail(String email);
     public Pessoa  findByEmail(String email);
+    public java.util.List<Pessoa> findByNomeContainingIgnoreCaseOrEmailContainingIgnoreCase(String nome, String email);
 }

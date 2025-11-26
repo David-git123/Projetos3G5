@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CARE — Editar pesquisa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="empresa-montar">
+    <header class="site-header">
+      <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav" aria-label="Principal">
+        <a href="empresa-home.html">Início</a>
+        <a href="minhas-postagens.html">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
+      </nav>
+      <nav class="user-nav" aria-label="Acesso"></nav>
+    </header>
+
+    <main class="empresa-shell">
+      <section class="page-title">
+        <h1>Editar pesquisa</h1>
+        <p id="infoForm" class="muted">Carregando...</p>
+      </section>
+
+      <section class="card">
+        <form class="form" id="editForm">
+          <label>
+            <span>Título</span>
+            <input type="text" id="editTitulo" required />
+          </label>
+          <label>
+            <span>Descrição</span>
+            <textarea id="editDescricao" rows="3"></textarea>
+          </label>
+          <label>
+            <span>Status</span>
+            <select id="editStatus">
+              <option value="RASCUNHO">Rascunho</option>
+              <option value="ATIVO">Ativo</option>
+              <option value="INATIVO">Inativo</option>
+            </select>
+          </label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" type="submit">Salvar</button>
+            <button class="btn btn-ghost" type="button" id="btnExcluir" style="color:#dc3545;">Excluir</button>
+          </div>
+          <div id="editMsg" class="muted" style="display:none;"></div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="assets/app.js"></script>
+    <script>
+      (function(){
+        const params = new URLSearchParams(location.search);
+        const id = params.get('id');
+        const info = document.getElementById('infoForm');
+        const msg = document.getElementById('editMsg');
+        const form = document.getElementById('editForm');
+        const titulo = document.getElementById('editTitulo');
+        const desc = document.getElementById('editDescricao');
+        const status = document.getElementById('editStatus');
+
+        async function carregar() {
+          if (!id) { info.textContent = 'ID inválido.'; return; }
+          const resp = await fetch(`/api/formularios/${id}`, { credentials:'include' });
+          const data = await resp.json();
+          if (!data.success || !data.formulario) {
+            info.textContent = data.message || 'Não foi possível carregar.';
+            return;
+          }
+          const f = data.formulario;
+          info.textContent = `ID ${f.id}`;
+          titulo.value = f.titulo || '';
+          desc.value = f.descricao || '';
+          status.value = (f.status || 'RASCUNHO').toUpperCase();
+        }
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          msg.style.display = 'none';
+          const payload = {
+            titulo: titulo.value.trim(),
+            descricao: desc.value.trim(),
+            status: status.value
+          };
+          const resp = await fetch(`/api/formularios/${id}`, {
+            method:'PUT',
+            headers:{'Content-Type':'application/json'},
+            credentials:'include',
+            body: JSON.stringify(payload)
+          });
+          const data = await resp.json();
+          msg.style.display = 'block';
+          msg.textContent = data.message || (data.success ? 'Salvo.' : 'Erro ao salvar.');
+        });
+
+        document.getElementById('btnExcluir')?.addEventListener('click', async () => {
+          if (!confirm('Excluir esta pesquisa?')) return;
+          const resp = await fetch(`/api/formularios/${id}`, { method:'DELETE', credentials:'include' });
+          const data = await resp.json();
+          if (data.success) {
+            alert('Excluída.');
+            location.href = 'criacao-de-pesquisa.html';
+          } else {
+            alert(data.message || 'Erro ao excluir.');
+          }
+        });
+
+        carregar();
+      })();
+    </script>
+  </body>
+</html>

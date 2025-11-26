@@ -25,75 +25,52 @@
         <a href="index.html">Início</a>
         <a href="quem-somos.html" class="requires-guest">Quem somos</a>
         <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth">Perfil</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Criação de pesquisa</a>
-        <a href="configuracoes.html" class="requires-auth" aria-current="page">Configurações</a>
+        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
+        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
+        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
+        <a href="login.html" class="requires-guest">Login</a>
+        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
       </nav>
       <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="container page-shell">
-      <section class="page-title">
-        <h1>Configurações</h1>
-      </section>
+    <main class="client-shell two-cols">
+      <aside class="profile-panel">
+        <div class="profile-avatar"></div>
+        <div class="profile-name" data-bind="user-name">Késia Carvalho</div>
+        <small class="muted">Configurações</small>
+        <nav class="profile-menu">
+          <a class="active" href="#info">Informações pessoais</a>
+          <a href="#temas">Opções de temas</a>
+          <a href="#privacidade">Privacidade</a>
+          <a href="ajuda.html">Ajuda</a>
+          <a href="#" id="linkSair" style="color:#dc3545;">Sair</a>
+        </nav>
+      </aside>
 
-      <div class="layout with-sidebar">
-        <aside class="sidebar" aria-label="Seções de configurações">
-          <ul>
-            <li><a href="#temas" class="active">Temas</a></li>
-            <li><a href="#suporte">Suporte</a></li>
-            <li><a href="#informacoes">Informações</a></li>
-            <li><a href="#versao">Versão</a></li>
-          </ul>
-        </aside>
-        <section class="cards-grid flexible">
-          <article id="senha" class="card">
-            <h3>Alterar Senha</h3>
-            <p class="muted">Atualize sua senha de acesso.</p>
-            <div id="mensagemSenha" style="display:none; padding:12px; margin-bottom:16px; border-radius:8px;"></div>
-            <form class="form" id="formSenha" style="margin-top:1rem;">
-              <label>
-                <span>Senha atual</span>
-                <input type="password" id="senhaAtual" placeholder="Digite sua senha atual" required />
-              </label>
-              <label>
-                <span>Nova senha</span>
-                <input type="password" id="novaSenha" placeholder="Digite a nova senha" required minlength="6" />
-              </label>
-              <label>
-                <span>Confirmar nova senha</span>
-                <input type="password" id="confirmarSenha" placeholder="Digite novamente" required />
-              </label>
-              <button type="submit" class="btn btn-primary" id="btnSalvarSenha">Alterar senha</button>
-            </form>
-          </article>
-          <article id="temas" class="card">
-            <h3>Tema</h3>
-            <p class="muted">Troca simples de tema.</p>
-            <div style="display:flex; gap:12px;">
-              <button class="btn btn-ghost" type="button" data-theme="light">Claro</button>
-              <button class="btn btn-ghost" type="button" data-theme="dark">Escuro</button>
-            </div>
-          </article>
-          <article id="suporte" class="card">
-            <h3>Suporte</h3>
-            <p class="muted">Canais de atendimento e FAQ.</p>
-            <div class="ph" style="height:120px"></div>
-          </article>
-          <article id="informacoes" class="card">
-            <h3>Informações</h3>
-            <p class="muted">Notas sobre a plataforma e a CARE.</p>
-            <div class="ph" style="height:120px"></div>
-          </article>
-          <article id="versao" class="card">
-            <h3>Versão</h3>
-            <p class="muted">v0.1.0 (front-end estático para navegação).</p>
-            <p class="muted">Precisa de ajuda? <a href="ajuda.html">Acesse a Ajuda</a>.</p>
-          </article>
-        </section>
-      </div>
+      <section class="profile-details">
+        <div class="profile-header">
+          <div class="profile-avatar small"></div>
+          <div>
+            <div class="muted">Avatar</div>
+            <small class="muted">Para mudar o avatar, clique no ícone ao lado do círculo</small>
+          </div>
+        </div>
+
+        <div class="profile-field">
+          <label for="nomePerfil">Nome</label>
+          <input id="nomePerfil" type="text" value="Késia Carvalho" />
+        </div>
+        <div class="profile-field">
+          <label for="bioPerfil">Bio</label>
+          <textarea id="bioPerfil" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-primary" type="button">Salvar alterações</button>
+          <button class="btn btn-ghost" type="button">Cancelar</button>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -192,6 +169,22 @@
           setTimeout(() => {
             mensagemSenha.style.display = 'none';
           }, 5000);
+        }
+      })();
+      // Logout rápido
+      document.getElementById('linkSair')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try { await fetch('/api/auth/logout', { method:'POST', credentials:'include' }); } catch(_) {}
+        localStorage.removeItem('care:user');
+        location.href = 'index.html';
+      });
+      // Preencher nome se existir
+      (function(){
+        const user = JSON.parse(localStorage.getItem('care:user') || 'null');
+        if (user?.name) {
+          const nome = document.getElementById('nomePerfil');
+          if (nome) nome.value = user.name;
+          document.querySelectorAll('[data-bind="user-name"]').forEach(el => el.textContent = user.name);
         }
       })();
     </script>

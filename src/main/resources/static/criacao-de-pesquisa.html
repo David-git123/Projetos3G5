@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Criação de pesquisa</title>
+    <title>CARE — Montar pesquisa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,45 +18,45 @@
     />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
-  <body data-page="criacao">
+  <body data-page="empresa-montar">
     <header class="site-header">
-      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
+      <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
       <nav class="main-nav" aria-label="Principal">
-        <a href="index.html">Início</a>
-        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
-        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth">Minhas Pesquisas</a>
-        <a href="perfil.html" class="requires-auth">Perfil</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth" aria-current="page">Criação de pesquisa</a>
-        <a href="configuracoes.html" class="requires-auth">Configurações</a>
+        <a href="empresa-home.html">Início</a>
+        <a href="minhas-postagens.html">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html" aria-current="page">Montar pesquisa</a>
       </nav>
       <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="container page-shell">
-      <section class="page-title">
-        <h1>Criação de pesquisa</h1>
-        <p class="muted">Disponível para contas do tipo <strong>Empresa</strong>.</p>
-      </section>
+    <main class="empresa-shell two-cols">
+      <aside class="pill-panel">
+        <button class="pill active" id="btnCriar" data-view="criar">Criar nova pesquisa</button>
+        <button class="pill" id="btnListar" data-view="listar">Pesquisas criadas</button>
+        <button class="pill" id="btnDeletadas" data-view="deletadas">Pesquisas deletadas</button>
+      </aside>
 
-      <section class="card" data-show-if="empresa">
-        <div id="mensagem" style="display:none; padding:12px; margin-bottom:16px; border-radius:8px;"></div>
-        <form class="form" id="formPesquisa">
-          <label>
-            <span>Título</span>
-            <input type="text" name="titulo" id="titulo" placeholder="Título da pesquisa" required />
-          </label>
-          <label>
-            <span>Descrição</span>
-            <textarea name="descricao" id="descricao" placeholder="Breve descrição" rows="3" required></textarea>
-          </label>
-          <button type="submit" class="btn btn-primary" id="btnSubmit">Publicar</button>
-        </form>
-      </section>
-
-      <section class="card" data-show-if="cliente">
-        <p class="muted">Esta seção é exclusiva para empresas.</p>
+      <section class="survey-list">
+        <article class="card" id="panelCriar">
+          <h3>Nova pesquisa</h3>
+          <form class="form" id="formNovaPesquisa">
+            <label>
+              <span>Título</span>
+              <input type="text" id="novoTitulo" placeholder="Nome da pesquisa" required />
+            </label>
+            <label>
+              <span>Descrição</span>
+              <textarea id="novaDescricao" rows="3" placeholder="Descreva o objetivo"></textarea>
+            </label>
+            <button class="btn btn-primary" type="submit">Criar</button>
+            <div id="novaMsg" class="muted" style="display:none;"></div>
+          </form>
+        </article>
+        <div id="panelListar">
+          <div id="montarLoading" class="muted" style="display:none;">Carregando...</div>
+          <div id="montarVazio" class="muted" style="display:none;">Nenhuma pesquisa encontrada.</div>
+          <div id="montarGrid" class="survey-grid" style="display:none;"></div>
+        </div>
       </section>
     </main>
 
@@ -71,72 +71,156 @@
     ></script>
     <script src="assets/app.js"></script>
     <script>
-      // Conectar formulário de criação de pesquisa ao backend
-      (function() {
-        const formPesquisa = document.getElementById('formPesquisa');
-        const mensagem = document.getElementById('mensagem');
-        
-        if (formPesquisa) {
-          formPesquisa.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const titulo = document.getElementById('titulo').value.trim();
-            const descricao = document.getElementById('descricao').value.trim();
-            const btnSubmit = document.getElementById('btnSubmit');
-            
-            if (!titulo) {
-              mostrarMensagem('Por favor, preencha o título.', 'error');
+      (function(){
+        const loading = document.getElementById('montarLoading');
+        const vazio = document.getElementById('montarVazio');
+        const grid = document.getElementById('montarGrid');
+        const btnCriar = document.getElementById('btnCriar');
+        const btnListar = document.getElementById('btnListar');
+        const btnDeletadas = document.getElementById('btnDeletadas');
+        const formNova = document.getElementById('formNovaPesquisa');
+        const novoTitulo = document.getElementById('novoTitulo');
+        const novaDescricao = document.getElementById('novaDescricao');
+        const novaMsg = document.getElementById('novaMsg');
+        const panelCriar = document.getElementById('panelCriar');
+        const panelListar = document.getElementById('panelListar');
+        let filtro = null;
+        let view = 'criar';
+
+        async function criar(titulo, descricao) {
+          novaMsg.style.display = 'none';
+          const resp = await fetch('/api/formularios', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            credentials:'include',
+            body: JSON.stringify({ titulo, descricao })
+          });
+          const data = await resp.json();
+          if (data.success) {
+            novaMsg.style.display = 'block';
+            novaMsg.textContent = 'Pesquisa criada.';
+            formNova.reset();
+            listar();
+          } else {
+            novaMsg.style.display = 'block';
+            novaMsg.textContent = data.message || 'Erro ao criar.';
+          }
+        }
+
+        async function listar() {
+          loading.style.display = 'block';
+          vazio.style.display = 'none';
+          grid.style.display = 'none';
+          grid.innerHTML = '';
+          try {
+            const resp = await fetch('/api/formularios', { credentials:'include' });
+            const data = await resp.json();
+            loading.style.display = 'none';
+            if (!data.success || !data.formularios || data.formularios.length === 0) {
+              vazio.style.display = 'block';
               return;
             }
-            
-            const originalText = btnSubmit.textContent;
-            btnSubmit.disabled = true;
-            btnSubmit.textContent = 'Publicando...';
-            
-            try {
-              const response = await fetch('/api/formularios', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({ titulo, descricao })
-              });
-              
-              const data = await response.json();
-              
-              if (data.success) {
-                mostrarMensagem('Pesquisa criada com sucesso!', 'success');
-                formPesquisa.reset();
-                setTimeout(() => {
-                  window.location.href = 'minhas-pesquisas.html';
-                }, 1500);
-              } else {
-                mostrarMensagem(data.message || 'Erro ao criar pesquisa. Tente novamente.', 'error');
-              }
-            } catch (error) {
-              console.error('Erro:', error);
-              mostrarMensagem('Erro ao conectar com o servidor. Tente novamente.', 'error');
-            } finally {
-              btnSubmit.disabled = false;
-              btnSubmit.textContent = originalText;
+            let filtrados = data.formularios;
+            if (view === 'listar') {
+              filtrados = filtrados.filter(f => (f.status || '').toUpperCase() !== 'INATIVO');
+            } else if (view === 'deletadas') {
+              filtrados = filtrados.filter(f => (f.status || '').toUpperCase() === 'INATIVO');
             }
+            if (filtrados.length === 0) {
+              vazio.style.display = 'block';
+              return;
+            }
+            grid.style.display = 'grid';
+            grid.innerHTML = filtrados.map(f => `
+              <div class="survey-card">
+                <div class="survey-thumb"></div>
+                <div>
+                  <h4>${escapeHtml(f.titulo || 'Sem título')}</h4>
+                  <p class="muted">${escapeHtml(f.descricao || 'Sem descrição')}</p>
+                  <small class="muted">Status: ${f.status || '—'}</small>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                    ${view !== 'deletadas' ? `<a class="btn btn-primary" href="editar-pesquisa.html?id=${f.id}">Editar</a>` : ''}
+                    ${view === 'deletadas'
+                      ? `<button class="btn btn-primary" data-id="${f.id}" data-action="recuperar">Recuperar</button>
+                          <button class="btn btn-ghost" data-id="${f.id}" data-action="deletar" style="color:#dc3545;">Excluir definitivamente</button>`
+                      : `<button class="btn btn-ghost" data-id="${f.id}" data-action="deletar" style="color:#dc3545;">Excluir</button>`}
+                  </div>
+                </div>
+              </div>
+            `).join('');
+          } catch (e) {
+            loading.style.display = 'none';
+            vazio.style.display = 'block';
+            vazio.textContent = 'Erro ao carregar.';
+          }
+        }
+
+        async function remover(id) {
+          if (view === 'deletadas') {
+            if (!confirm('Excluir definitivamente esta pesquisa?')) return;
+          } else {
+            if (!confirm('Enviar para deletadas?')) return;
+          }
+          const resp = await fetch(`/api/formularios/${id}`, { method:'DELETE', credentials:'include' });
+          const data = await resp.json();
+          alert(data.message || (data.success ? 'Excluída.' : 'Erro ao excluir.'));
+          listar();
+        }
+
+        async function recuperar(id) {
+          const resp = await fetch(`/api/formularios/${id}/recuperar`, {
+            method:'POST',
+            credentials:'include'
           });
+          const data = await resp.json();
+          alert(data.message || (data.success ? 'Recuperada para rascunho.' : 'Erro ao recuperar.'));
+          listar();
         }
-        
-        function mostrarMensagem(texto, tipo) {
-          mensagem.textContent = texto;
-          mensagem.style.display = 'block';
-          mensagem.style.background = tipo === 'success' ? '#d4edda' : '#f8d7da';
-          mensagem.style.color = tipo === 'success' ? '#155724' : '#721c24';
-          mensagem.style.border = `1px solid ${tipo === 'success' ? '#c3e6cb' : '#f5c6cb'}`;
-          
-          setTimeout(() => {
-            mensagem.style.display = 'none';
-          }, 5000);
+
+        grid?.addEventListener('click', async (e) => {
+          const btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          const id = btn.getAttribute('data-id');
+          const action = btn.getAttribute('data-action');
+          if (action === 'deletar') await remover(id);
+          if (action === 'recuperar') await recuperar(id);
+        });
+
+        function setView(newView) {
+          view = newView;
+          [btnCriar, btnListar, btnDeletadas].forEach(btn => btn.classList.remove('active'));
+          if (view === 'criar') btnCriar.classList.add('active');
+          if (view === 'listar') btnListar.classList.add('active');
+          if (view === 'deletadas') btnDeletadas.classList.add('active');
+          panelCriar.style.display = view === 'criar' ? 'block' : 'none';
+          panelListar.style.display = view === 'criar' ? 'none' : 'block';
+          if (view !== 'criar') listar();
         }
+
+        btnCriar?.addEventListener('click', () => setView('criar'));
+        btnListar?.addEventListener('click', () => setView('listar'));
+        btnDeletadas?.addEventListener('click', () => setView('deletadas'));
+
+        formNova?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const titulo = novoTitulo.value.trim();
+          const descricao = novaDescricao.value.trim();
+          if (!titulo) {
+            novaMsg.style.display = 'block';
+            novaMsg.textContent = 'Informe um título.';
+            return;
+          }
+          await criar(titulo, descricao);
+        });
+
+        function escapeHtml(text) {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        setView('criar');
       })();
     </script>
   </body>
-  </html>
-
+</html>
