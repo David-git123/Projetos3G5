@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Log In</title>
+    <title>CARE - Log In</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,78 +17,264 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="assets/styles.css" />
+    <style>
+      /* Layout baseado no protótipo de login/cadastro */
+      body[data-page="login"] {
+        background: #d6d9df;
+        min-height: 100vh;
+        padding: 24px;
+      }
+      .login-frame {
+        position: relative;
+        max-width: 1250px;
+        margin: 0 auto 32px;
+        border: 6px solid #ffffff;
+        border-radius: 16px;
+        padding: 18px;
+        background: url('assets/img/fundo-login.png') center center / cover no-repeat;
+        box-shadow: 0 18px 32px rgba(0, 0, 0, 0.28);
+      }
+      body[data-page="login"] .site-header {
+        position: static;
+        width: min(1200px, 100%);
+        margin: 0 auto 18px auto;
+        background: transparent;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 24px;
+      }
+      body[data-page="login"] .brand {
+        background: url('assets/logo-horizontal.png') no-repeat left center / contain;
+        width: 220px;
+        height: 92px;
+        text-indent: -9999px;
+      }
+      body[data-page="login"] .main-nav {
+        justify-content: center;
+        gap: 26px;
+      }
+      body[data-page="login"] .main-nav a {
+        color: #8a8a8a;
+        font-weight: 800;
+        font-size: 1.02rem;
+        padding: 10px 6px;
+        border: none;
+        background: none;
+        box-shadow: none;
+      }
+      body[data-page="login"] .main-nav a[aria-current="page"] {
+        color: #3b9cf3;
+      }
+      body[data-page="login"] .user-nav {
+        gap: 14px;
+      }
+      body[data-page="login"] .user-nav .btn-ghost {
+        background: none;
+        border: none;
+        box-shadow: none;
+        color: #111111;
+        font-weight: 800;
+        padding: 10px 4px;
+      }
+      body[data-page="login"] .user-nav .btn-primary {
+        background: #5da9ff;
+        color: #ffffff;
+        border: 1px solid #2f8ee6;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 800;
+        box-shadow: 0 10px 18px rgba(93, 169, 255, 0.35);
+      }
+      .login-proto-shell {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 8px;
+      }
+      .login-visual {
+        display: none;
+      }
+      .login-card {
+        background: #eeeeee;
+        border-left: 1px solid #d8d8d8;
+        padding: 24px 22px 26px;
+        display: grid;
+        align-content: start;
+        gap: 16px;
+        min-width: 440px;
+        max-width: 560px;
+      }
+      .auth-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px #d7d7d7;
+      }
+      .auth-tab {
+        text-align: center;
+        padding: 12px 10px;
+        border: none;
+        background: transparent;
+        font-weight: 800;
+        color: #3d3d3d;
+        cursor: pointer;
+      }
+      .auth-tab.active {
+        background: #2c5ac9;
+        color: #ffffff;
+      }
+      .auth-card {
+        width: 100%;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.16);
+        border: 1px solid #d7d7d7;
+      }
+      .auth-card h1 {
+        text-align: left;
+        margin: 0 0 14px;
+        font-size: 1.2rem;
+        font-weight: 800;
+      }
+      .form label span {
+        font-weight: 700;
+      }
+      .form input {
+        background: #f5f5f5;
+        border: 1px solid #d3d3d3;
+        border-radius: 999px;
+      }
+      .btn.btn-primary.btn-block {
+        background: #0b7adf;
+        border-radius: 999px;
+        box-shadow: 0 10px 18px rgba(11, 122, 223, 0.35);
+        border: 1px solid #0b6eca;
+      }
+      .providers {
+        display: grid;
+        gap: 8px;
+      }
+      .providers .btn-ghost {
+        border-radius: 999px;
+        border: 1px solid #d3d3d3;
+        background: #f5f5f5;
+      }
+      .auth-links {
+        text-align: left;
+        color: #4a4a4a;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      .auth-links a {
+        color: #0b7adf;
+        font-weight: 800;
+      }
+      @media (max-width: 900px) {
+        .login-proto-shell {
+          grid-template-columns: 1fr;
+        }
+        .login-card {
+          border-left: none;
+        }
+      }
+    </style>
   </head>
   <body data-page="login">
-    <header class="site-header">
-      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="index.html">Início</a>
-        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
-        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
-        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
-        <a href="login.html" class="requires-guest" aria-current="page">Login</a>
-        <a href="#cadastro" class="requires-guest" id="abrirCadastro">Cadastre-se</a>
-      </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
-    </header>
+    <div class="login-frame">
+      <header class="site-header">
+        <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
+        <nav class="main-nav" aria-label="Principal">
+          <a href="index.html">Inicio</a>
+          <a href="quem-somos.html" class="requires-guest">Quem somos</a>
+          <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
+          <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
+          <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
+          <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
+          <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
+          <a href="login.html" class="requires-guest" aria-current="page">Login</a>
+          <a href="#cadastro" class="requires-guest" id="abrirCadastro">Cadastre-se</a>
+        </nav>
+        <nav class="user-nav" aria-label="Acesso"></nav>
+      </header>
 
-    <main class="login-shell">
-      <section class="login-info">
-        <div class="login-logo">CARE</div>
-        <h1>Entre e continue de onde parou</h1>
-        <p>Gerencie pesquisas, acompanhe empresas parceiras e mantenha seu perfil atualizado.</p>
-      </section>
-
-      <section class="auth-card" aria-labelledby="tituloAuth">
-        <button class="auth-back" onclick="history.back()" aria-label="Voltar">←</button>
-        <h1 id="tituloAuth">Log in</h1>
-
-        <form class="form" id="formLogin" autocomplete="on">
-          <label>
-            <span>E-mail</span>
-            <input type="email" name="email" placeholder="seu@email.com" required />
-          </label>
-          <label>
-            <span>Senha</span>
-            <input type="password" name="password" placeholder="••••••••" required />
-          </label>
-          <button class="btn btn-primary btn-block" type="submit">Entrar</button>
-          <div class="muted small center">
-            <span>Não tem uma conta? </span><a href="#cadastro" id="linkCadastro">Cadastre-se</a>
+      <main class="login-proto-shell">
+        <section class="login-visual" aria-hidden="true">
+          <div class="login-visual-content">
+            <div class="login-visual-logo">
+              <div class="logo-mark">CARE</div>
+              <p>DO FEEDBACK AO RESULTADO!</p>
+            </div>
           </div>
-        </form>
+        </section>
 
-        <form class="form hidden" id="formCadastro" autocomplete="on">
-          <label>
-            <span>E-mail</span>
-            <input type="email" name="email" placeholder="seu@email.com" required />
-          </label>
-          <label>
-            <span>Senha</span>
-            <input type="password" name="password" placeholder="Crie uma senha" required />
-          </label>
-          <label>
-            <span>Confirmar senha</span>
-            <input type="password" name="confirmPassword" placeholder="Repita a senha" required />
-          </label>
-          <button class="btn btn-primary btn-block" type="submit">Cadastrar-se</button>
-          <div class="muted small center">
-            <span>Já possui conta? </span><a href="#login" id="linkLogin">Entrar</a>
+        <section class="login-card">
+          <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="location.hash='#login'">Log in</button>
+            <button class="auth-tab" id="tabCadastro" onclick="location.hash='#cadastro'">Cadastre-se</button>
           </div>
-        </form>
 
-        <div class="providers">
-          <button class="btn btn-ghost btn-block" type="button">Entrar com Google</button>
-          <button class="btn btn-ghost btn-block" type="button">Entrar com Facebook</button>
-        </div>
-      </section>
-    </main>
+          <section class="auth-card" aria-labelledby="tituloAuth">
+            <h1 id="tituloAuth">Log in</h1>
+
+            <form class="form" id="formLogin" autocomplete="on">
+              <label>
+                <span>E-mail</span>
+                <input type="email" name="email" placeholder="seu@email.com" required />
+              </label>
+              <label>
+                <span>Senha</span>
+                <input type="password" name="password" placeholder="********" required />
+              </label>
+              <button class="btn btn-primary btn-block" type="submit">Entrar</button>
+              <div class="auth-links">
+                <span>Não tem uma conta? </span><a href="#cadastro" id="linkCadastro">Cadastre-se</a>
+              </div>
+            </form>
+
+            <form class="form hidden" id="formCadastro" autocomplete="on">
+              <label>
+                <span>Nome completo</span>
+                <input type="text" name="nome" placeholder="Seu nome" required />
+              </label>
+              <label>
+                <span>E-mail</span>
+                <input type="email" name="email" placeholder="seu@email.com" required />
+              </label>
+              <label>
+                <span>Senha</span>
+                <input type="password" name="password" placeholder="Crie uma senha" required />
+              </label>
+              <label>
+                <span>Confirmar senha</span>
+                <input type="password" name="confirmPassword" placeholder="Repita a senha" required />
+              </label>
+              <input type="hidden" name="tipo" value="cliente" />
+              <button class="btn btn-primary btn-block" type="submit">Cadastrar-se</button>
+              <div class="auth-links">
+                <span>Já possui conta? </span><a href="#login" id="linkLogin">Entrar</a>
+              </div>
+            </form>
+
+            <div class="providers">
+              <button class="btn btn-ghost btn-block" type="button">Entrar com Google</button>
+              <button class="btn btn-ghost btn-block" type="button">Entrar com Facebook</button>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
 
     <footer class="site-footer">
-      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
+      <small>© <span id="ano"></span> CARE - Todos os direitos reservados.</small>
     </footer>
 
     <script
@@ -97,7 +283,19 @@
       crossorigin="anonymous"
     ></script>
     <script src="assets/app.js"></script>
+    <script>
+      // Sincroniza abas visuais com o estado do formulário
+      (function() {
+        const tabLogin = document.getElementById('tabLogin');
+        const tabCadastro = document.getElementById('tabCadastro');
+        function syncTabs() {
+          const isCadastro = location.hash === '#cadastro';
+          tabLogin?.classList.toggle('active', !isCadastro);
+          tabCadastro?.classList.toggle('active', isCadastro);
+        }
+        window.addEventListener('hashchange', syncTabs);
+        syncTabs();
+      })();
+    </script>
   </body>
   </html>
-
-

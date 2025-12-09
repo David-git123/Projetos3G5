@@ -17,23 +17,181 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="assets/styles.css" />
+    <style>
+      /* Visual alinhado ao protótipo "Montar pesquisa" */
+      body[data-page="empresa-montar"] {
+        background: #d6d9df;
+      }
+      body[data-page="empresa-montar"] .site-header {
+        position: static;
+        width: min(1200px, calc(100% - 32px));
+        margin: 18px auto 0;
+        border-radius: 12px 12px 0 0;
+        border: 1px solid #d5d5d5;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        background: #ffffff;
+        padding: 14px 22px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 24px;
+      }
+      body[data-page="empresa-montar"] .brand {
+        background: url('assets/logo-horizontal.png') no-repeat left center / contain;
+        width: 180px;
+        height: 48px;
+        text-indent: -9999px;
+      }
+      body[data-page="empresa-montar"] .main-nav {
+        justify-content: center;
+        gap: 26px;
+      }
+      body[data-page="empresa-montar"] .main-nav a {
+        color: #7a7a7a;
+        font-weight: 700;
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 10px 6px;
+      }
+      body[data-page="empresa-montar"] .main-nav a[aria-current="page"] {
+        color: #3b9cf3;
+      }
+      .montar-user {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .montar-user .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f1f1f1, #d9d9d9);
+        border: 2px solid #ffffff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
+      }
+      .montar-shell {
+        max-width: 1200px;
+        margin: 0 auto 38px;
+        background: #c7ddf7;
+        border: 1px solid #d5d5d5;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        padding: 28px 24px 40px;
+        display: grid;
+        grid-template-columns: minmax(260px, 320px) 1fr;
+        gap: 36px;
+      }
+      .montar-menu {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 18px 16px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e1e1e1;
+        display: grid;
+        gap: 14px;
+      }
+      .montar-menu .menu-btn {
+        width: 100%;
+        text-align: left;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 12px;
+        border-radius: 12px;
+        border: none;
+        background: #f2f2f2;
+        font-weight: 800;
+        color: #1d1d1d;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+      }
+      .montar-menu .menu-btn.active {
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+        background: #ffffff;
+      }
+      .montar-menu .menu-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: #1f1f1f;
+        display: grid;
+        place-items: center;
+        color: #ffffff;
+        font-weight: 900;
+      }
+      .survey-list {
+        align-self: start;
+        display: grid;
+        gap: 18px;
+      }
+      .survey-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 32px 22px;
+      }
+      .survey-card {
+        display: grid;
+        gap: 10px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+      .survey-card .survey-thumb {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        background: #cfcfcf;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+      }
+      .survey-card h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .survey-card p {
+        margin: 0;
+        color: #0f172a;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      @media (max-width: 900px) {
+        .montar-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-page="empresa-montar">
-    <header class="site-header">
+    <header class="site-header empresa-header">
       <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="empresa-home.html">Início</a>
-        <a href="minhas-postagens.html">Minhas postagens</a>
-        <a href="criacao-de-pesquisa.html" aria-current="page">Montar pesquisa</a>
-      </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
-    </header>
+      <nav class="main-nav empresa-nav" aria-label="Principal">
+      <a href="empresa-home.html">Início</a>
+      <a href="minhas-postagens.html">Minhas postagens</a>
+      <a href="criacao-de-pesquisa.html" aria-current="page">Montar pesquisa</a>
+    </nav>
+    <div class="empresa-user">
+      <span class="user-name" data-bind="user-name">Roberto Rodrigues</span>
+      <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+    </div>
+  </header>
 
-    <main class="empresa-shell two-cols">
-      <aside class="pill-panel">
-        <button class="pill active" id="btnCriar" data-view="criar">Criar nova pesquisa</button>
-        <button class="pill" id="btnListar" data-view="listar">Pesquisas criadas</button>
-        <button class="pill" id="btnDeletadas" data-view="deletadas">Pesquisas deletadas</button>
+    <main class="montar-shell">
+      <aside class="montar-menu">
+        <button class="menu-btn active" id="btnCriar" data-view="criar">
+          <span class="menu-icon">■</span>
+          Criar nova pesquisa
+        </button>
+        <button class="menu-btn" id="btnListar" data-view="listar">
+          <span class="menu-icon">■</span>
+          Pesquisas criadas
+        </button>
+        <button class="menu-btn" id="btnDeletadas" data-view="deletadas">
+          <span class="menu-icon">■</span>
+          Pesquisas deletadas
+        </button>
       </aside>
 
       <section class="survey-list">

@@ -17,6 +17,85 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="assets/styles.css" />
+    <style>
+      /* Ajustes visuais alinhados ao protótipo da tela de empresas parceiras */
+      body[data-page="partners"] {
+        background: #d6d9df;
+      }
+      body[data-page="partners"] .partners-shell {
+        max-width: 1200px;
+        margin: 0 auto 32px;
+        padding: 0;
+        background: transparent;
+        border: 1px solid #d5d5d5;
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+      }
+      body[data-page="partners"] .partners-hero {
+        background: #c7ddf7;
+        padding: 32px 32px 44px;
+      }
+      body[data-page="partners"] .partners-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 42px 28px;
+      }
+      body[data-page="partners"] .partner-card {
+        align-items: flex-start;
+        gap: 12px;
+        color: #0f172a;
+      }
+      body[data-page="partners"] .partner-thumb {
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        background: #cfcfcf;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+        position: relative;
+      }
+      body[data-page="partners"] .partner-badge {
+        position: absolute;
+        top: 8px;
+        right: 6px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50% 50% 50% 0;
+        background: #1586e7;
+        color: #ffffff;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        box-shadow: 0 8px 14px rgba(21, 134, 231, 0.35);
+        font-size: 1rem;
+      }
+      body[data-page="partners"] .partner-name {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        line-height: 1.3;
+        color: #0f172a;
+      }
+      body[data-page="partners"] .partners-state {
+        display: none;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 12px;
+      }
+      @media (max-width: 768px) {
+        body[data-page="partners"] .site-header {
+          width: calc(100% - 24px);
+        }
+        body[data-page="partners"] .partners-hero {
+          padding: 24px 18px 32px;
+        }
+        body[data-page="partners"] .partners-grid {
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+          gap: 28px 18px;
+        }
+      }
+    </style>
   </head>
   <body data-page="partners">
     <header class="site-header">
@@ -24,7 +103,7 @@
       <nav class="main-nav" aria-label="Principal">
         <a href="index.html">Início</a>
         <a href="quem-somos.html" class="requires-guest">Quem somos</a>
-        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
+        <a href="empresas.html" class="requires-guest" aria-current="page">Empresas parceiras</a>
         <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
         <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
         <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
@@ -36,48 +115,53 @@
     </header>
 
     <main class="partners-shell">
-      <section class="partners-grid" aria-label="Empresas parceiras">
-        <!-- placeholders de parceiros -->
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
-        <article class="partner-card">
-          <div class="partner-thumb"></div>
-          <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-        </article>
+      <section class="partners-hero" aria-label="Empresas parceiras">
+        <div id="loading" class="partners-state" aria-live="polite">Carregando empresas...</div>
+        <div id="emptyState" class="partners-state" aria-live="polite"></div>
+        <section class="partners-grid" id="lista-parceiras" aria-live="polite">
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb">
+              <span class="partner-badge" aria-hidden="true">A</span>
+            </div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+          <article class="partner-card">
+            <div class="partner-thumb"></div>
+            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
+          </article>
+        </section>
       </section>
     </main>
 

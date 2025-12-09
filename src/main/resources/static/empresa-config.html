@@ -19,14 +19,17 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body data-page="empresa-config">
-    <header class="site-header">
+    <header class="site-header empresa-header">
       <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
+      <nav class="main-nav empresa-nav" aria-label="Principal">
         <a href="empresa-home.html">Início</a>
         <a href="minhas-postagens.html">Minhas postagens</a>
-        <a href="editar-pesquisa.html">Criar nova pesquisa</a>
+        <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
+      <div class="empresa-user">
+        <span class="user-name" data-bind="user-name">Roberto Rodrigues</span>
+        <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+      </div>
     </header>
 
     <main class="empresa-shell two-cols">
@@ -35,12 +38,12 @@
         <div class="profile-name" data-bind="user-name">Roberto Rodrigues</div>
         <small class="muted">Configurações</small>
         <nav class="profile-menu">
-          <a class="active" href="#info">Informações pessoais</a>
-          <a href="#temas">Opções de temas</a>
-          <a href="#privacidade">Privacidade</a>
-          <a href="ajuda.html">Ajuda</a>
-          <a href="#" id="linkSairEmpresa" style="color:#dc3545;">Sair</a>
-        </nav>
+        <a class="active" href="#info">Informações pessoais</a>
+        <a href="#temas">Opções de temas</a>
+        <a href="#privacidade">Privacidade</a>
+        <button type="button" class="menu-btn-link" id="btnAjudaDummyEmpresa">Ajuda</button>
+        <a href="#" id="linkSairEmpresa" style="color:#dc3545;">Sair</a>
+      </nav>
       </aside>
 
       <section class="profile-details">
@@ -91,6 +94,9 @@
           if (nome) nome.value = user.name;
         }
       })();
+
+      // Botão de Ajuda não navega
+      document.getElementById('btnAjudaDummyEmpresa')?.addEventListener('click', (e) => e.preventDefault());
     </script>
   </body>
 </html>

@@ -19,18 +19,18 @@ public class CadastroService {
         if(pessoa.getNome() == null || pessoa.getEmail() == null || pessoa.getSenha() == null || pessoa.getTipoAcesso() == null){
             return false;
         }
-        else{
-            if(repo.existsByEmail(pessoa.getEmail())){
-                return false;
-            }
-            else{
-                // Hash da senha antes de salvar
-                String senhaHash = passwordEncoder.encode(pessoa.getSenha());
-                pessoa.setSenha(senhaHash);
-                repo.save(pessoa);
-                return true;
-            }
+
+        // Atualiza se ja existir e for o mesmo registro
+        Pessoa existente = repo.findByEmail(pessoa.getEmail());
+        if (existente != null && (pessoa.getId() == null || !existente.getId().equals(pessoa.getId()))) {
+            return false;
         }
+
+        boolean senhaJaHash = pessoa.getSenha().startsWith("$2a$") || pessoa.getSenha().startsWith("$2b$");
+        String senhaHash = senhaJaHash ? pessoa.getSenha() : passwordEncoder.encode(pessoa.getSenha());
+        pessoa.setSenha(senhaHash);
+        repo.save(pessoa);
+        return true;
     }
 
     public boolean autenticarUsuario(String email, String senha){

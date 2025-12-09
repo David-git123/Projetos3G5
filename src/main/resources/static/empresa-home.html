@@ -1,117 +1,209 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Área da Empresa</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="assets/styles.css" />
-  </head>
-  <body data-page="empresa-home">
-    <header class="site-header">
-      <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="empresa-home.html" aria-current="page">Início</a>
-        <a href="minhas-postagens.html">Minhas postagens</a>
-        <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
-      </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
-    </header>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CARE - Area da Empresa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body data-page="empresa-home">
+  <header class="site-header empresa-header">
+    <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
+    <nav class="main-nav empresa-nav" aria-label="Principal">
+      <a href="empresa-home.html" aria-current="page">Início</a>
+      <a href="minhas-postagens.html">Minhas postagens</a>
+      <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
+    </nav>
+    <div class="empresa-user">
+      <span class="user-name" data-bind="user-name">Roberto Rodrigues</span>
+      <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+    </div>
+  </header>
 
-    <main class="empresa-home-shell">
-      <section class="empresa-hero-pane">
-        <div class="empresa-hero-text">
-          <p class="muted">Bem-vindo, <span data-bind="user-name">Empresa</span></p>
-          <h1>Monitore suas postagens e crie novas pesquisas</h1>
-          <p>Gerencie rascunhos, publique com agilidade e acompanhe o engajamento.</p>
-          <div class="empresa-actions">
-            <a class="btn btn-primary" href="criacao-de-pesquisa.html">Criar pesquisa</a>
-            <a class="btn btn-ghost" href="minhas-postagens.html">Ver postagens</a>
-          </div>
-          <div class="empresa-stats">
-            <div><strong id="statPublicadas">--</strong><span>publicadas</span></div>
-            <div><strong id="statRascunhos">--</strong><span>rascunhos</span></div>
-            <div><strong id="statAtivasEmpresa">--</strong><span>ativas</span></div>
+  <main class="empresa-home-shell">
+    <section class="empresa-hero-pane">
+      <div class="empresa-hero-text">
+        <p class="muted">Bem-vindo, <span data-bind="user-name">Empresa</span></p>
+        <h1>Monitore suas postagens e crie novas pesquisas</h1>
+        <p>Gerencie rascunhos, publique com agilidade e acompanhe o engajamento.</p>
+        <div class="empresa-actions">
+          <a class="btn btn-primary" href="criacao-de-pesquisa.html">Criar pesquisa</a>
+          <a class="btn btn-ghost" href="minhas-postagens.html">Ver postagens</a>
+        </div>
+        <div class="empresa-stats">
+          <div class="stat"><strong id="statPublicadas">--</strong><span>publicadas</span></div>
+          <div class="stat"><strong id="statRascunhos">--</strong><span>rascunhos</span></div>
+          <div class="stat"><strong id="statAtivasEmpresa">--</strong><span>ativas</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="empresa-content">
+      <div class="empresa-tabs">
+        <a class="tab active" href="criacao-de-pesquisa.html">Criar pesquisa</a>
+        <a class="tab" href="minhas-postagens.html">Ver postagens</a>
+      </div>
+
+      <div class="empresa-list">
+        <div class="empresa-list-head">
+          <h3>Postagens recentes</h3>
+          <a class="card-link" href="minhas-postagens.html">Ver todas</a>
+        </div>
+        <ul class="empresa-items" id="recentesLista"></ul>
+      </div>
+
+      <div class="empresa-columns">
+        <div class="empresa-card">
+          <h4>Acoes rapidas</h4>
+          <div class="shortcut-grid">
+            <a class="shortcut" href="criacao-de-pesquisa.html">Montar pesquisa</a>
+            <a class="shortcut" href="minhas-postagens.html">Publicar</a>
+            <a class="shortcut" href="configuracoes.html">Configuracoes</a>
           </div>
         </div>
-      </section>
-
-      <section class="empresa-content">
-        <div class="empresa-tabs">
-          <a class="tab active" href="criacao-de-pesquisa.html">Criar pesquisa</a>
-          <a class="tab" href="minhas-postagens.html">Ver postagens</a>
-        </div>
-
-        <div class="empresa-list">
-          <div class="empresa-list-head">
-            <h3>Postagens recentes</h3>
-            <a class="card-link" href="minhas-postagens.html">Ver todas</a>
-          </div>
-          <ul class="empresa-items">
-            <li>
-              <h4>Pesquisa 1</h4>
-              <p class="muted">Resumo rápido da sua última publicação.</p>
-            </li>
-            <li>
-              <h4>Pesquisa 2</h4>
-              <p class="muted">Insights aguardando respostas.</p>
-            </li>
-            <li>
-              <h4>Pesquisa 3</h4>
-              <p class="muted">Atualização em destaque para clientes.</p>
-            </li>
+        <div class="empresa-card">
+          <h4>Atividade</h4>
+          <ul class="notif-list">
+            <li>Ha pesquisas prontas para publicacao.</li>
+            <li>Algumas postagens estao em rascunho.</li>
+            <li>Revise as respostas mais recentes.</li>
           </ul>
         </div>
-
-        <div class="empresa-columns">
-          <div class="empresa-card">
-            <h4>Ações rápidas</h4>
-            <div class="shortcut-grid">
-              <a class="shortcut" href="criacao-de-pesquisa.html">Montar pesquisa</a>
-              <a class="shortcut" href="minhas-postagens.html">Publicar</a>
-              <a class="shortcut" href="configuracoes.html">Configurações</a>
-            </div>
-          </div>
-          <div class="empresa-card">
-            <h4>Atividade</h4>
-            <ul class="notif-list">
-              <li>Há pesquisas prontas para publicação.</li>
-              <li>Algumas postagens estão em rascunho.</li>
-              <li>Revise as respostas mais recentes.</li>
-            </ul>
-          </div>
+        <div class="empresa-card" data-show-if="admin">
+          <h4>Criar conta de Empresa (super)</h4>
+          <form class="stacked-form" id="formNovaEmpresa">
+            <label class="stacked">
+              <span>Nome da empresa</span>
+              <input type="text" name="nome" placeholder="Empresa ABC" required />
+            </label>
+            <label class="stacked">
+              <span>Email</span>
+              <input type="email" name="email" placeholder="empresa@email.com" required />
+            </label>
+            <label class="stacked">
+              <span>Senha inicial</span>
+              <input type="password" name="password" placeholder="Senha temporaria" required />
+            </label>
+            <button class="btn btn-primary btn-block" type="submit">Criar conta de Empresa</button>
+            <div class="muted small" id="msgNovaEmpresa"></div>
+          </form>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
+  </main>
 
-    <footer class="site-footer">
-      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
-    </footer>
+  <footer class="site-footer">
+    <small>© <span id="ano"></span> CARE - Todos os direitos reservados.</small>
+  </footer>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <script src="assets/app.js"></script>
-    <script>
-      (function() {
-        const stats = { publicadas: 5, rascunhos: 2, ativas: 3 };
-        document.getElementById('statPublicadas').textContent = stats.publicadas;
-        document.getElementById('statRascunhos').textContent = stats.rascunhos;
-        document.getElementById('statAtivasEmpresa').textContent = stats.ativas;
-      })();
-    </script>
-  </body>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"
+  ></script>
+  <script src="assets/app.js"></script>
+  <script>
+    (function() {
+      async function carregarStats() {
+        const sPub = document.getElementById('statPublicadas');
+        const sRas = document.getElementById('statRascunhos');
+        const sAti = document.getElementById('statAtivasEmpresa');
+        try {
+          const resp = await fetch('/api/formularios', { credentials:'include' });
+          const data = await resp.json();
+          if (!data.success || !data.formularios) return;
+          const forms = data.formularios;
+          const publicadas = forms.filter(f => (f.status || '').toUpperCase() === 'ATIVO').length;
+          const rascunhos = forms.filter(f => (f.status || '').toUpperCase() === 'RASCUNHO').length;
+          const ativas = publicadas;
+          sPub.textContent = publicadas;
+          sRas.textContent = rascunhos;
+          sAti.textContent = ativas;
+        } catch (e) {
+          console.error('Erro ao carregar stats', e);
+        }
+      }
+      async function carregarRecentes() {
+        const ul = document.getElementById('recentesLista');
+        if (!ul) return;
+        try {
+          const resp = await fetch('/api/formularios', { credentials:'include' });
+          const data = await resp.json();
+          if (!data.success || !data.formularios) return;
+          const forms = data.formularios
+            .filter(f => (f.status || '').toUpperCase() === 'ATIVO')
+            .sort((a, b) => {
+              const da = new Date(a.dataAtualizacao || a.dataCriacao || 0).getTime();
+              const db = new Date(b.dataAtualizacao || b.dataCriacao || 0).getTime();
+              return db - da;
+            })
+            .slice(0, 3);
+          if (forms.length === 0) {
+            ul.innerHTML = '<li><p class="muted">Nenhuma postagem publicada.</p></li>';
+            return;
+          }
+          ul.innerHTML = forms.map(f => `
+            <li>
+              <h4>${f.titulo || 'Sem titulo'}</h4>
+              <p class="muted">${f.descricao || 'Sem descricao'}</p>
+            </li>
+          `).join('');
+        } catch (e) {
+          console.error('Erro ao carregar recentes', e);
+        }
+      }
+      function bindFormEmpresa() {
+        const form = document.getElementById('formNovaEmpresa');
+        const msg = document.getElementById('msgNovaEmpresa');
+        if (!form) return;
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const data = new FormData(form);
+          const nome = String(data.get('nome') || '').trim();
+          const email = String(data.get('email') || '').trim();
+          const password = String(data.get('password') || '').trim();
+          if (!nome || !email || !password) {
+            msg.textContent = 'Preencha todos os campos.';
+            msg.style.color = '#d00';
+            return;
+          }
+          msg.textContent = 'Enviando...';
+          msg.style.color = 'inherit';
+          try {
+            const resp = await fetch('/api/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ nome, email, password, confirmPassword: password, tipo: 'empresa' })
+            });
+            const json = await resp.json();
+            if (json.success) {
+              msg.textContent = 'Empresa criada com sucesso.';
+              msg.style.color = 'green';
+              form.reset();
+            } else {
+              msg.textContent = json.message || 'Erro ao criar empresa.';
+              msg.style.color = '#d00';
+            }
+          } catch (err) {
+            msg.textContent = 'Erro ao criar empresa: ' + err.message;
+            msg.style.color = '#d00';
+          }
+        });
+      }
+      carregarStats();
+      carregarRecentes();
+      bindFormEmpresa();
+    })();
+  </script>
+</body>
 </html>

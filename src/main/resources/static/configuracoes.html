@@ -17,36 +17,131 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="assets/styles.css" />
+    <style>
+      /* Visual para a suíte de configurações (temas, privacidade, info, ajuda) */
+      body[data-page="config"] {
+        background: #d6d9df;
+      }
+      body[data-page="config"] .site-header {
+        position: static;
+        width: min(1200px, calc(100% - 32px));
+        margin: 18px auto 0;
+        border-radius: 12px 12px 0 0;
+        border: 1px solid #d5d5d5;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        background: #ffffff;
+        padding: 14px 22px;
+      }
+      .config-shell {
+        max-width: 1200px;
+        margin: 0 auto 38px;
+        background: #c7ddf7;
+        border: 1px solid #d5d5d5;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        padding: 28px 24px 40px;
+        display: grid;
+        grid-template-columns: minmax(260px, 320px) 1fr;
+        gap: 36px;
+      }
+      .profile-panel {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 20px 16px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e1e1e1;
+      }
+      .profile-avatar {
+        background: linear-gradient(135deg, #f1f1f1, #d9d9d9);
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+      }
+      .profile-menu a {
+        display: block;
+        background: #f2f2f2;
+        padding: 12px;
+        border-radius: 12px;
+        margin-top: 10px;
+        font-weight: 800;
+        color: #1d1d1d;
+        text-decoration: none;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+      }
+      .profile-menu a.active {
+        background: #ffffff;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+      }
+      .profile-details {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e1e1e1;
+      }
+      .profile-field input,
+      .profile-field textarea {
+        background: #f5f5f5;
+        border-radius: 12px;
+        border: 1px solid #d3d3d3;
+      }
+      .profile-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .profile-actions .btn-primary {
+        background: #0b7adf;
+        border-radius: 999px;
+        box-shadow: 0 10px 18px rgba(11, 122, 223, 0.35);
+        border: 1px solid #0b6eca;
+      }
+      @media (max-width: 900px) {
+        .config-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-page="config">
-    <header class="site-header">
+    <header class="site-header config-header">
       <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="index.html">Início</a>
-        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
-        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
-        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
-        <a href="login.html" class="requires-guest">Login</a>
-        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
+
+      <!-- Header para cliente -->
+      <nav class="main-nav cliente-nav requires-role-cliente" aria-label="Principal">
+        <a href="cliente-home.html">Início</a>
+        <a href="seguindo.html">Seguindo</a>
+        <a href="minhas-pesquisas.html">Minhas pesquisas</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
+
+      <!-- Header para empresa -->
+      <nav class="main-nav empresa-nav requires-role-empresa" aria-label="Principal">
+        <a href="empresa-home.html">Início</a>
+        <a href="minhas-postagens.html">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
+      </nav>
+
+      <div class="cliente-user requires-role-cliente">
+        <span class="user-name" data-bind="user-name">Késia Carvalho</span>
+        <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+      </div>
+      <div class="empresa-user requires-role-empresa">
+        <span class="user-name" data-bind="user-name">Roberto Rodrigues</span>
+        <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+      </div>
     </header>
 
-    <main class="client-shell two-cols">
+    <main class="config-shell">
       <aside class="profile-panel">
         <div class="profile-avatar"></div>
         <div class="profile-name" data-bind="user-name">Késia Carvalho</div>
         <small class="muted">Configurações</small>
         <nav class="profile-menu">
-          <a class="active" href="#info">Informações pessoais</a>
-          <a href="#temas">Opções de temas</a>
-          <a href="#privacidade">Privacidade</a>
-          <a href="ajuda.html">Ajuda</a>
-          <a href="#" id="linkSair" style="color:#dc3545;">Sair</a>
-        </nav>
+        <a class="active" href="#info">Informações pessoais</a>
+        <a href="#temas">Opções de temas</a>
+        <a href="#privacidade">Privacidade</a>
+        <button type="button" class="menu-btn-link" id="btnAjudaDummy">Ajuda</button>
+        <a href="#" id="linkSair" style="color:#dc3545;">Sair</a>
+      </nav>
       </aside>
 
       <section class="profile-details">
@@ -187,6 +282,9 @@
           document.querySelectorAll('[data-bind="user-name"]').forEach(el => el.textContent = user.name);
         }
       })();
+
+      // Botão de Ajuda não navega
+      document.getElementById('btnAjudaDummy')?.addEventListener('click', (e) => e.preventDefault());
     </script>
   </body>
   </html>

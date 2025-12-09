@@ -19,20 +19,17 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body data-page="seguindo">
-    <header class="site-header">
-      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="index.html">Início</a>
-        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
-        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth requires-role-cliente" aria-current="page">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
-        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
-        <a href="login.html" class="requires-guest">Login</a>
-        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
+    <header class="site-header cliente-header">
+      <a href="cliente-home.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav cliente-nav" aria-label="Principal">
+        <a href="cliente-home.html">Início</a>
+        <a href="seguindo.html" aria-current="page">Seguindo</a>
+        <a href="minhas-pesquisas.html">Minhas pesquisas</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
+      <div class="cliente-user">
+        <span class="user-name" data-bind="user-name">Cliente</span>
+        <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+      </div>
     </header>
 
     <main class="client-shell">

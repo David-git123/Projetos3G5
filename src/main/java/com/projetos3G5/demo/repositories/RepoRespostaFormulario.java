@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface RepoRespostaFormulario extends JpaRepository<RespostaFormulario, Long> {
     List<RespostaFormulario> findByFormulario(Formulario formulario);
+    void deleteByFormulario(Formulario formulario);
 }

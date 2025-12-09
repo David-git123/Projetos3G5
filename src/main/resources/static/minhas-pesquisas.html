@@ -17,25 +17,182 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="assets/styles.css" />
+    <style>
+      /* Visual alinhado ao protótipo "Minhas pesquisas" */
+      body[data-page="pesquisas"] {
+        background: #d6d9df;
+      }
+      body[data-page="pesquisas"] .site-header {
+        position: static;
+        width: min(1200px, calc(100% - 32px));
+        margin: 18px auto 0;
+        border-radius: 12px 12px 0 0;
+        border: 1px solid #d5d5d5;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        background: #ffffff;
+        padding: 12px 22px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 24px;
+      }
+      body[data-page="pesquisas"] .brand {
+        background: url('assets/logo-horizontal.png') no-repeat left center / contain;
+        width: 180px;
+        height: 48px;
+        text-indent: -9999px;
+      }
+      body[data-page="pesquisas"] .main-nav {
+        justify-content: center;
+        gap: 26px;
+      }
+      body[data-page="pesquisas"] .main-nav a {
+        color: #7a7a7a;
+        font-weight: 700;
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 10px 6px;
+      }
+      body[data-page="pesquisas"] .main-nav a[aria-current="page"] {
+        color: #3b9cf3;
+      }
+      .pesq-user {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .pesq-user .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f1f1f1, #d9d9d9);
+        border: 2px solid #ffffff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
+      }
+      .pesquisas-shell {
+        max-width: 1200px;
+        margin: 0 auto 38px;
+        background: #c7ddf7;
+        border: 1px solid #d5d5d5;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        padding: 28px 24px 40px;
+        display: grid;
+        grid-template-columns: minmax(260px, 320px) 1fr;
+        gap: 36px;
+      }
+      .pesquisas-menu {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 18px 16px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e1e1e1;
+        display: grid;
+        gap: 14px;
+      }
+      .pesquisas-menu .menu-btn {
+        width: 100%;
+        text-align: left;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 12px;
+        border-radius: 12px;
+        border: none;
+        background: #f2f2f2;
+        font-weight: 800;
+        color: #1d1d1d;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+      }
+      .pesquisas-menu .menu-btn.primary {
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+        background: #ffffff;
+      }
+      .pesquisas-menu .menu-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: #1f1f1f;
+        display: grid;
+        place-items: center;
+        color: #ffffff;
+        font-weight: 900;
+      }
+      .survey-list {
+        align-self: start;
+      }
+      .survey-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 42px 28px;
+      }
+      .survey-grid .card {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        display: grid;
+        gap: 10px;
+      }
+      .survey-grid .ph {
+        width: 132px;
+        height: 132px;
+        border-radius: 8px;
+        background: #cfcfcf;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+      }
+      .survey-grid h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .survey-grid p {
+        margin: 0;
+        color: #0f172a;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      @media (max-width: 900px) {
+        .pesquisas-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body data-page="pesquisas">
-    <header class="site-header">
-      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="index.html">Início</a>
-        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
-        <a href="empresas.html" class="requires-guest">Empresas parceiras</a>
-        <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
-        <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente" aria-current="page">Minhas Pesquisas</a>
-        <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
-        <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
-        <a href="login.html" class="requires-guest">Login</a>
-        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
+    <header class="site-header cliente-header">
+      <a href="cliente-home.html" class="brand" aria-label="CARE Home">CARE</a>
+      <nav class="main-nav cliente-nav" aria-label="Principal">
+        <a href="cliente-home.html">Início</a>
+        <a href="seguindo.html">Seguindo</a>
+        <a href="minhas-pesquisas.html" aria-current="page">Minhas pesquisas</a>
       </nav>
-      <nav class="user-nav" aria-label="Acesso"></nav>
+      <div class="cliente-user">
+        <span class="user-name" data-bind="user-name">Késia Carvalho</span>
+        <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+      </div>
     </header>
 
-    <main class="client-shell">
+    <main class="pesquisas-shell">
+      <aside class="pesquisas-menu" aria-label="Filtros de pesquisas">
+        <button class="menu-btn primary" type="button">
+          <span class="menu-icon">■</span>
+          Pesquisas não respondidas
+        </button>
+        <button class="menu-btn" type="button">
+          <span class="menu-icon">■</span>
+          Pesquisas em andamento
+        </button>
+        <button class="menu-btn" type="button">
+          <span class="menu-icon">■</span>
+          Pesquisas respondidas
+        </button>
+      </aside>
+
       <section class="survey-list">
         <div id="loading" class="muted">Carregando pesquisas...</div>
         <div id="emptyState" class="muted" style="display:none;">Nenhuma pesquisa recebida.</div>

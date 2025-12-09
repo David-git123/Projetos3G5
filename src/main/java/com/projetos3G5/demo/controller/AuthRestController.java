@@ -3,12 +3,12 @@ package com.projetos3G5.demo.controller;
 import com.projetos3G5.demo.entities.Pessoa;
 import com.projetos3G5.demo.repositories.RepoCadastro;
 import com.projetos3G5.demo.service.CadastroService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,96 +27,95 @@ public class AuthRestController {
     public ResponseEntity<Map<String, Object>> login(
             @RequestBody Map<String, String> credentials,
             HttpSession session) {
-        
+
         String email = credentials.get("email");
         String senha = credentials.get("password");
-        
+
         Map<String, Object> response = new HashMap<>();
-        
+
         if (email == null || senha == null) {
             response.put("success", false);
-            response.put("message", "Email e senha são obrigatórios");
+            response.put("message", "Email e senha sao obrigatorios");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         boolean isAutenticado = cadastroService.autenticarUsuario(email, senha);
-        
+
         if (isAutenticado) {
             Pessoa pessoa = repoCadastro.findByEmail(email);
             if (pessoa != null) {
-                // Criar/atualizar sessão
                 session.setAttribute("usuarioId", pessoa.getId());
                 session.setAttribute("usuarioNome", pessoa.getNome());
                 session.setAttribute("usuarioTipo", pessoa.getTipoAcesso());
-                
-                // Debug: verificar se sessão foi criada
-                System.out.println("[DEBUG LOGIN] Sessão criada - ID: " + session.getId());
-                System.out.println("[DEBUG LOGIN] Usuário ID salvo: " + pessoa.getId());
-                System.out.println("[DEBUG LOGIN] Verificando atributo: " + session.getAttribute("usuarioId"));
-                
+
                 response.put("success", true);
                 response.put("message", "Login realizado com sucesso");
-                response.put("sessionId", session.getId()); // Incluir sessionId na resposta para debug
+                response.put("sessionId", session.getId());
                 Map<String, Object> user = new HashMap<>();
                 user.put("id", pessoa.getId());
                 user.put("name", pessoa.getNome());
                 user.put("email", pessoa.getEmail());
                 user.put("role", pessoa.getTipoAcesso().toLowerCase());
                 response.put("user", user);
-                
+
                 return ResponseEntity.ok(response);
             }
         }
-        
+
         response.put("success", false);
         response.put("message", "Email ou senha incorretos");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, String> data) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, String> data, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
-        
-        String nome = data.get("nome");
-        String email = data.get("email");
-        String senha = data.get("password");
+
+        String nome = data.get("nome") != null ? data.get("nome").trim() : null;
+        String email = data.get("email") != null ? data.get("email").trim() : null;
+        String senha = data.get("password") != null ? data.get("password").trim() : null;
+        String confirmSenha = data.get("confirmPassword") != null ? data.get("confirmPassword").trim() : null;
         String tipo = data.get("tipo");
-        
-        if (nome == null || email == null || senha == null || tipo == null) {
+
+        if (nome == null || nome.isEmpty() || email == null || email.isEmpty() || senha == null || senha.isEmpty()) {
             response.put("success", false);
-            response.put("message", "Todos os campos são obrigatórios");
+            response.put("message", "Todos os campos sao obrigatorios");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        // Converter tipo para o formato esperado pelo backend
-        String tipoAcesso;
-        if (tipo.equalsIgnoreCase("empresa") || tipo.equalsIgnoreCase("administrador")) {
-            tipoAcesso = "ADMINISTRADOR";
-        } else {
-            tipoAcesso = "CLIENTE";
+        if (confirmSenha != null && !confirmSenha.equals(senha)) {
+            response.put("success", false);
+            response.put("message", "Senhas nao conferem");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        
-        System.out.println("[DEBUG REGISTER] Tipo recebido: '" + tipo + "'");
-        System.out.println("[DEBUG REGISTER] Tipo convertido: '" + tipoAcesso + "'");
-        
+
+        boolean isAdminLogado = "ADMINISTRADOR".equals(session.getAttribute("usuarioTipo"));
+        String tipoAcesso = "CLIENTE";
+        if (tipo != null && isAdminLogado) {
+            if (tipo.equalsIgnoreCase("empresa") || tipo.equalsIgnoreCase("administrador")) {
+                tipoAcesso = "ADMINISTRADOR";
+            } else if (tipo.equalsIgnoreCase("cliente")) {
+                tipoAcesso = "CLIENTE";
+            }
+        }
+
         Pessoa pessoa = new Pessoa(nome, email, senha, tipoAcesso);
         boolean sucesso = cadastroService.salvarUsuario(pessoa);
-        
+
         if (sucesso) {
-            // Verificar o que foi salvo
             Pessoa pessoaSalva = repoCadastro.findByEmail(email);
             if (pessoaSalva != null) {
                 System.out.println("[DEBUG REGISTER] Pessoa salva com tipo: '" + pessoaSalva.getTipoAcesso() + "'");
             }
         }
-        
+
         if (sucesso) {
             response.put("success", true);
             response.put("message", "Cadastro realizado com sucesso");
             return ResponseEntity.ok(response);
         } else {
             response.put("success", false);
-            response.put("message", "Erro ao cadastrar. Email já pode estar em uso.");
+            response.put("message", "Erro ao cadastrar. Email ja pode estar em uso.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
@@ -125,19 +124,14 @@ public class AuthRestController {
     public ResponseEntity<Map<String, Object>> getCurrentUser(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         Long usuarioId = (Long) session.getAttribute("usuarioId");
-        
-        // Debug: logar informações da sessão
-        System.out.println("[DEBUG] Sessão ID: " + session.getId());
-        System.out.println("[DEBUG] Usuário ID na sessão: " + usuarioId);
-        System.out.println("[DEBUG] Todos os atributos da sessão: " + java.util.Collections.list(session.getAttributeNames()));
-        
+
         if (usuarioId == null) {
             response.put("success", false);
             response.put("user", null);
             response.put("sessionId", session.getId());
             return ResponseEntity.ok(response);
         }
-        
+
         Pessoa pessoa = repoCadastro.findById(usuarioId).orElse(null);
         if (pessoa != null) {
             Map<String, Object> user = new HashMap<>();
@@ -149,7 +143,7 @@ public class AuthRestController {
             response.put("user", user);
             return ResponseEntity.ok(response);
         }
-        
+
         response.put("success", false);
         response.put("user", null);
         return ResponseEntity.ok(response);
@@ -168,53 +162,50 @@ public class AuthRestController {
     public ResponseEntity<Map<String, Object>> atualizarPerfil(
             @RequestBody Map<String, String> data,
             HttpSession session) {
-        
+
         Map<String, Object> response = new HashMap<>();
         Long usuarioId = (Long) session.getAttribute("usuarioId");
-        
+
         if (usuarioId == null) {
             response.put("success", false);
-            response.put("message", "Usuário não autenticado");
+            response.put("message", "Usuario nao autenticado");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
         Optional<Pessoa> pessoaOpt = repoCadastro.findById(usuarioId);
         if (pessoaOpt.isEmpty()) {
             response.put("success", false);
-            response.put("message", "Usuário não encontrado");
+            response.put("message", "Usuario nao encontrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         Pessoa pessoa = pessoaOpt.get();
-        
-        // Atualizar campos fornecidos
+
         if (data.containsKey("nome")) {
-            String nome = data.get("nome");
-            if (nome != null && !nome.trim().isEmpty()) {
-                pessoa.setNome(nome.trim());
+            String novoNome = data.get("nome");
+            if (novoNome != null && !novoNome.trim().isEmpty()) {
+                pessoa.setNome(novoNome.trim());
             }
         }
-        
+
         if (data.containsKey("email")) {
-            String email = data.get("email");
-            if (email != null && !email.trim().isEmpty()) {
-                // Verificar se email já está em uso por outro usuário
-                Pessoa pessoaComEmail = repoCadastro.findByEmail(email.trim());
+            String novoEmail = data.get("email");
+            if (novoEmail != null && !novoEmail.trim().isEmpty()) {
+                Pessoa pessoaComEmail = repoCadastro.findByEmail(novoEmail.trim());
                 if (pessoaComEmail != null && !pessoaComEmail.getId().equals(usuarioId)) {
                     response.put("success", false);
-                    response.put("message", "Este email já está em uso por outro usuário");
+                    response.put("message", "Este email ja esta em uso por outro usuario");
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
                 }
-                pessoa.setEmail(email.trim());
+                pessoa.setEmail(novoEmail.trim());
             }
         }
 
         try {
             repoCadastro.save(pessoa);
-            
-            // Atualizar sessão
+
             session.setAttribute("usuarioNome", pessoa.getNome());
-            
+
             response.put("success", true);
             response.put("message", "Perfil atualizado com sucesso");
             Map<String, Object> user = new HashMap<>();
@@ -223,7 +214,7 @@ public class AuthRestController {
             user.put("email", pessoa.getEmail());
             user.put("role", pessoa.getTipoAcesso().toLowerCase());
             response.put("user", user);
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
@@ -236,13 +227,13 @@ public class AuthRestController {
     public ResponseEntity<Map<String, Object>> alterarSenha(
             @RequestBody Map<String, String> data,
             HttpSession session) {
-        
+
         Map<String, Object> response = new HashMap<>();
         Long usuarioId = (Long) session.getAttribute("usuarioId");
-        
+
         if (usuarioId == null) {
             response.put("success", false);
-            response.put("message", "Usuário não autenticado");
+            response.put("message", "Usuario nao autenticado");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
@@ -251,31 +242,29 @@ public class AuthRestController {
 
         if (senhaAtual == null || novaSenha == null || novaSenha.length() < 6) {
             response.put("success", false);
-            response.put("message", "Senha inválida. A nova senha deve ter pelo menos 6 caracteres.");
+            response.put("message", "Senha invalida. A nova senha deve ter pelo menos 6 caracteres.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         Optional<Pessoa> pessoaOpt = repoCadastro.findById(usuarioId);
         if (pessoaOpt.isEmpty()) {
             response.put("success", false);
-            response.put("message", "Usuário não encontrado");
+            response.put("message", "Usuario nao encontrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         Pessoa pessoa = pessoaOpt.get();
-        
-        // Verificar senha atual
+
         if (!cadastroService.autenticarUsuario(pessoa.getEmail(), senhaAtual)) {
             response.put("success", false);
             response.put("message", "Senha atual incorreta");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        // Atualizar senha
         try {
             pessoa.setSenha(novaSenha);
-            cadastroService.salvarUsuario(pessoa); // Isso vai fazer o hash da senha
-            
+            cadastroService.salvarUsuario(pessoa);
+
             response.put("success", true);
             response.put("message", "Senha alterada com sucesso");
             return ResponseEntity.ok(response);
@@ -286,4 +275,3 @@ public class AuthRestController {
         }
     }
 }
-

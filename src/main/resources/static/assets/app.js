@@ -177,6 +177,7 @@
       if (cond === 'logged') show = logged;
       else if (cond === 'guest') show = !logged;
       else if (cond === 'empresa') show = logged && (u.role === 'empresa' || u.role === 'administrador');
+      else if (cond === 'admin') show = logged && u.role === 'administrador';
       else if (cond === 'cliente') show = logged && (u.role === 'cliente');
       el.hidden = !show;
     });
@@ -345,10 +346,15 @@
     const nome = String(data.get('nome') || '').trim();
     const email = String(data.get('email') || '').trim();
     const password = String(data.get('password') || '').trim();
+    const confirmPassword = String(data.get('confirmPassword') || '').trim();
     const tipo = String(data.get('tipo') || 'cliente');
     
     if (!nome || !email || !password) {
       alert('Por favor, preencha todos os campos.');
+      return;
+    }
+    if (confirmPassword && confirmPassword !== password) {
+      alert('As senhas nao conferem.');
       return;
     }
 
@@ -360,7 +366,7 @@
     try {
       const response = await apiRequest('/register', {
         method: 'POST',
-        body: JSON.stringify({ nome, email, password, tipo })
+        body: JSON.stringify({ nome, email, password, confirmPassword, tipo })
       });
 
       if (response.success) {

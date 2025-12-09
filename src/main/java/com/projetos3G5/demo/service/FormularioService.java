@@ -143,10 +143,10 @@ public class FormularioService {
     }
 
     //Atualiza um formulário existente
-    public boolean atualizarFormulario(Long formularioId, Long criadorId, String titulo, 
+    public boolean atualizarFormulario(Long formularioId, Long criadorId, String titulo,
                                        String descricao, String status) {
         Optional<Formulario> formularioOpt = buscarFormularioPorId(formularioId, criadorId);
-        
+
         if (formularioOpt.isEmpty()) {
             return false;
         }
@@ -163,9 +163,10 @@ public class FormularioService {
 
         if (status != null && !status.trim().isEmpty()) {
             formulario.setStatus(status);
-            // Se voltou para rascunho ou inativo, limpamos destinatários
+            // Se voltou para rascunho ou inativo, limpamos destinatários e respostas
             if ("RASCUNHO".equalsIgnoreCase(status) || "INATIVO".equalsIgnoreCase(status)) {
                 limparDestinatarios(formulario);
+                repoRespostaFormulario.deleteByFormulario(formulario);
             }
         }
 
@@ -176,21 +177,26 @@ public class FormularioService {
     //Remove um formulário
     @Transactional
     public boolean removerFormulario(Long formularioId, Long criadorId) {
-        Optional<Formulario> formularioOpt = buscarFormularioPorId(formularioId, criadorId);
-        
+        Optional<Formulario> formularioOpt = repoFormulario.findById(formularioId);
         if (formularioOpt.isEmpty()) {
             return false;
         }
         Formulario formulario = formularioOpt.get();
+        // Permitir se criador ou administrador
+        if (!formulario.getCriador().getId().equals(criadorId) && !isAdministrador(criadorId)) {
+            return false;
+        }
         if ("INATIVO".equalsIgnoreCase(formulario.getStatus())) {
             // Exclusão definitiva
             limparDestinatarios(formulario);
+            repoRespostaFormulario.deleteByFormulario(formulario);
             repoFormulario.delete(formulario);
             return true;
         } else {
             formulario.setStatus("INATIVO"); // soft delete para aparecer em "deletadas"
             repoFormulario.save(formulario);
             limparDestinatarios(formulario);
+            repoRespostaFormulario.deleteByFormulario(formulario);
             return true;
         }
     }

@@ -113,21 +113,15 @@ a:hover {
 }
 .brand {
   text-decoration: none;
-  color: var(--text);
-  font-weight: 800;
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
-  letter-spacing: 0.08em;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  text-transform: uppercase;
+  display: inline-block;
+  width: 180px;
+  height: 40px;
+  background: url('logo-horizontal.png') no-repeat left center / contain;
+  text-indent: -9999px;
+  overflow: hidden;
 }
 .brand::after {
-  content: "";
-  width: 32px;
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--brand), var(--accent));
+  content: none;
 }
 .main-nav,
 .user-nav {
@@ -556,8 +550,12 @@ a:hover {
   text-align: left;
 }
 .footer-brand {
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  display: block;
+  width: 180px;
+  height: 32px;
+  background: url('logo-horizontal.png') no-repeat left center / contain;
+  text-indent: -9999px;
+  overflow: hidden;
 }
 .footer-links,
 .footer-social {
@@ -1079,6 +1077,147 @@ body[data-page="empresa-montar"] .site-header .brand,
 body[data-page="empresa-config"] .site-header .brand {
   font-size: 34px;
 }
+/* Header empresarial customizado (logo grande e user à direita) */
+.empresa-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  border: none;
+  box-shadow: none;
+  padding: 0 12px;
+  background: transparent;
+}
+.empresa-header .brand {
+  background: url('logo-horizontal.png') no-repeat left center / contain;
+  width: 220px;
+  height: 92px;
+  text-indent: -9999px;
+}
+.empresa-nav {
+  justify-content: center;
+  gap: 26px;
+}
+.empresa-nav a {
+  color: #8a8a8a;
+  font-weight: 800;
+  font-size: 1.02rem;
+  padding: 10px 6px;
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+.empresa-nav a[aria-current="page"] {
+  color: #3b9cf3;
+}
+.empresa-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.empresa-user .avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f1f1f1, #d9d9d9);
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Header do cliente (seguindo/minhas pesquisas) */
+.cliente-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  border: none;
+  box-shadow: none;
+  padding: 0 12px;
+  background: transparent;
+}
+.cliente-header .brand {
+  background: url('logo-horizontal.png') no-repeat left center / contain;
+  width: 220px;
+  height: 92px;
+  text-indent: -9999px;
+}
+.cliente-nav {
+  justify-content: center;
+  gap: 26px;
+}
+.cliente-nav a {
+  color: #8a8a8a;
+  font-weight: 800;
+  font-size: 1.02rem;
+  padding: 10px 6px;
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+.cliente-nav a[aria-current="page"] {
+  color: #3b9cf3;
+}
+.cliente-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.cliente-user .avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f1f1f1, #d9d9d9);
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
+  display: inline-block;
+  cursor: pointer;
+}
+/* Ajuste de espaçamento para headers cliente */
+body[data-page="cliente-home"] .cliente-header,
+body[data-page="seguindo"] .cliente-header,
+body[data-page="pesquisas"] .cliente-header,
+body[data-page="config"] .cliente-header {
+  max-width: 1280px;
+  margin: 18px auto 12px;
+  padding: 0 12px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Header para página de configurações (troca conforme o papel) */
+.config-header {
+  position: static;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 18px auto 12px;
+  padding: 0 12px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+body.role-empresa .config-header {
+  grid-template-columns: auto 1fr auto;
+}
+body.role-empresa .config-header .brand {
+  width: 220px;
+  height: 92px;
+  background: url('logo-horizontal.png') no-repeat left center / contain;
+}
+body.role-empresa .config-header .empresa-user .avatar,
+body.role-empresa .config-header .cliente-user .avatar {
+  width: 72px;
+  height: 72px;
+}
 body[data-page="seguindo"] .main-nav,
 body[data-page="pesquisas"] .main-nav,
 body[data-page="config"] .main-nav,
@@ -1240,6 +1379,18 @@ body[data-page="empresa-config"] .main-nav a[aria-current="page"] {
   display: grid;
   gap: 10px;
   margin-top: 8px;
+}
+.profile-panel .menu-btn-link {
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #111;
+  background: #f0f0f0;
+  border: none;
+  text-align: left;
+  font-weight: 700;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  cursor: default;
 }
 .profile-menu a {
   padding: 10px 12px;
@@ -1505,18 +1656,27 @@ body[data-page="empresa-home"] .empresa-actions {
 }
 body[data-page="empresa-home"] .empresa-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
   background: linear-gradient(135deg, #2563eb, #0ea5e9);
   color: #fff;
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 18px;
   box-shadow: 0 16px 28px rgba(14, 165, 233, 0.35);
-  margin-top: 10px;
+  margin-top: 12px;
+}
+body[data-page="empresa-home"] .empresa-stats .stat {
+  text-align: center;
+  display: grid;
+  gap: 6px;
 }
 body[data-page="empresa-home"] .empresa-stats strong {
   display: block;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+body[data-page="empresa-home"] .empresa-stats span {
+  opacity: 0.9;
 }
 body[data-page="empresa-home"] .empresa-content {
   margin-top: 16px;
@@ -1576,6 +1736,34 @@ body[data-page="empresa-home"] .empresa-card {
   box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
   display: grid;
   gap: 10px;
+}
+body[data-page="empresa-home"] .shortcut-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+body[data-page="empresa-home"] .shortcut {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #eef1f5;
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px #e5e7eb;
+  transition: all 0.15s ease;
+}
+body[data-page="empresa-home"] .shortcut:hover {
+  background: #e2e8f0;
+  box-shadow: inset 0 0 0 1px #d5d9e0;
+}
+body[data-page="empresa-home"] .empresa-items li {
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+body[data-page="empresa-home"] .empresa-items li:last-child {
+  border-bottom: none;
 }
 
 /* Destinatários painel */
