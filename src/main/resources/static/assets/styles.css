@@ -667,35 +667,31 @@ body[data-page="about"] .about-full {
 }
 body[data-page="about"] .team-grid {
   width: 100%;
-  max-width: 1360px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px;
   display: grid;
-  grid-template-columns: repeat(6, minmax(180px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
   justify-items: center;
 }
 body[data-page="about"] .team-member {
   display: grid;
-  gap: 8px;
+  gap: 12px;
   text-align: center;
   color: #0f172a;
 }
 body[data-page="about"] .team-member img {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 14px;
+  width: 230px;
+  height: 230px;
+  object-fit: contain;
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 16px;
   display: block;
 }
-body[data-page="about"] .team-member strong {
-  font-weight: 800;
-  font-size: 1rem;
-}
-body[data-page="about"] .team-member span {
-  color: #475569;
-  font-size: 0.95rem;
-}
+body[data-page="about"] .team-member strong,
+body[data-page="about"] .team-member span { display: none; }
 @media (max-width: 900px) {
   body[data-page="about"] .team-grid {
     padding: 0 16px;
