@@ -16,6 +16,21 @@
   // ===== Auth conectado ao backend =====
   const USER_KEY = 'care:user';
   const API_BASE = '/api/auth';
+  const MOCK_USERS_KEY = 'care:mockUsers';
+
+  function getMockUsers() {
+    try {
+      return JSON.parse(localStorage.getItem(MOCK_USERS_KEY) || '[]');
+    } catch {
+      return [];
+    }
+  }
+  function saveMockUser(user) {
+    const list = getMockUsers();
+    const idx = list.findIndex(u => u.email === user.email);
+    if (idx >= 0) list[idx] = user; else list.push(user);
+    localStorage.setItem(MOCK_USERS_KEY, JSON.stringify(list));
+  }
 
   // Função para fazer requisições ao backend
   async function apiRequest(url, options = {}) {
@@ -70,7 +85,21 @@
 
   function setUser(user) {
     if (user) {
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      // Usa papel vindo do backend; apenas preenche nome/empresa se faltarem
+      const mockUsers = getMockUsers();
+      const mock = mockUsers.find(u => u.email === user.email);
+      const merged = { ...user };
+      if (mock) {
+        if (!merged.name && (mock.nome || mock.name)) merged.name = mock.nome || mock.name;
+        if (!merged.empresa && mock.empresa) merged.empresa = mock.empresa;
+        // Alinha mock com backend para não sobrescrever promoção
+        if (mock.role !== merged.role) {
+          mock.role = merged.role;
+          localStorage.setItem('care:mockUsers', JSON.stringify(mockUsers));
+        }
+      }
+      merged.nome = merged.name;
+      localStorage.setItem(USER_KEY, JSON.stringify(merged));
     } else {
       localStorage.removeItem(USER_KEY);
     }
@@ -101,18 +130,11 @@
           <span class="avatar">${initialsFromName(user.name)}</span>
           <span class="greet">${user.name.split(' ')[0]}</span>
         </a>
-        <a class="btn btn-ghost" href="#" id="btnLogout">Sair</a>
       `;
-      nav.querySelector('#btnLogout')?.addEventListener('click', async (e) => {
-        e.preventDefault();
-        await apiRequest('/logout', { method: 'POST' });
-        clearUser();
-        location.href = 'index.html';
-      });
     } else {
       nav.innerHTML = `
         <a class="btn btn-ghost" href="login.html">Log In</a>
-        <a class="btn btn-primary" href="login.html#cadastro">Cadastrar-se</a>
+        <a class="btn btn-primary" href="cadastro.html">Cadastrar-se</a>
       `;
     }
   }
@@ -123,16 +145,17 @@
     updateBindings();
     updateNavVisibility();
 
-    // Redireciona home conforme o papel
+    // Apenas super usuário permanece na home pública; outros papéis são encaminhados
     const user = getUser();
     const isRootHome = (path === '' || path === 'index.html');
     if (user && isRootHome) {
-      if (user.role === 'cliente') {
-        location.href = 'cliente-home.html';
+      if (user.role === 'administrador') {
+        // fica na home para criar novas empresas
+      } else if (user.role === 'cliente') {
+        location.href = 'seguindo.html';
         return;
-      }
-      if (user.role === 'empresa' || user.role === 'administrador') {
-        location.href = 'empresa-home.html';
+      } else if (user.role === 'empresa') {
+        location.href = 'minhas-postagens.html';
         return;
       }
     }
@@ -186,11 +209,16 @@
   function updateNavVisibility() {
     const u = getUser();
     const body = document.body;
-    body.classList.remove('auth-yes','role-empresa','role-cliente');
+    body.classList.remove('auth-yes','role-empresa','role-cliente','role-admin');
     if (u) {
       body.classList.add('auth-yes');
-      const role = u.role === 'administrador' ? 'empresa' : u.role;
-      body.classList.add(role === 'empresa' ? 'role-empresa' : 'role-cliente');
+      if (u.role === 'administrador') {
+        body.classList.add('role-admin');
+      } else if (u.role === 'empresa') {
+        body.classList.add('role-empresa');
+      } else {
+        body.classList.add('role-cliente');
+      }
     }
 
     // Elementos com classes de requisito (fallback em JS)
@@ -198,25 +226,45 @@
       el.style.display = u ? '' : 'none';
     });
     document.querySelectorAll('.requires-role-empresa').forEach(el => {
-      el.style.display = (u && (u.role === 'empresa' || u.role === 'administrador')) ? '' : 'none';
+      el.style.display = (u && u.role === 'empresa') ? '' : 'none';
     });
     document.querySelectorAll('.requires-role-cliente').forEach(el => {
       el.style.display = (u && u.role === 'cliente') ? '' : 'none';
+    });
+    document.querySelectorAll('.requires-role-admin').forEach(el => {
+      el.style.display = (u && u.role === 'administrador') ? '' : 'none';
     });
     document.querySelectorAll('.requires-guest').forEach(el => {
       el.style.display = u ? 'none' : '';
     });
 
-    // Ajusta link de "Início" para apontar para a home correta por papel
+    // Ajusta nav para admin: força link de Início e marca a logo
+    const nav = document.querySelector('.main-nav');
+    const brand = document.querySelector('.brand');
+    if (u && u.role === 'administrador' && nav) {
+      const hasInicio = Array.from(nav.querySelectorAll('a')).some(a => (a.getAttribute('href') || '').includes('admin-home.html'));
+      if (!hasInicio) {
+        const link = document.createElement('a');
+        link.href = 'admin-home.html';
+        link.textContent = 'Início';
+        nav.prepend(link);
+      }
+    }
+    // Ajusta logo para apontar para a primeira opção do header
+    const firstNavLink = document.querySelector('.main-nav a');
+    if (brand) {
+      let target = firstNavLink?.getAttribute('href') || 'index.html';
+      if (u && u.role === 'administrador') {
+        target = 'admin-home.html';
+      }
+      brand.setAttribute('href', target);
+    }
+
+    // Link de "Início" sempre aponta para a home pública
     const homeLink = document.querySelector('.main-nav a[href="index.html"]');
     if (homeLink) {
-      let target = 'index.html';
-      if (u) {
-        if (u.role === 'cliente') target = 'cliente-home.html';
-        else if (u.role === 'empresa' || u.role === 'administrador') target = 'empresa-home.html';
-      }
-      homeLink.setAttribute('href', target);
-      if (target === path || (target === 'index.html' && (path === '' || path === 'index.html'))) {
+      homeLink.setAttribute('href', 'index.html');
+      if (path === 'index.html' || path === '') {
         homeLink.setAttribute('aria-current', 'page');
       } else {
         homeLink.removeAttribute('aria-current');
@@ -232,9 +280,8 @@
     'minhas-pesquisas.html',
     'criacao-de-pesquisa.html',
     'minhas-postagens.html',
-    'cliente-home.html',
-    'empresa-home.html',
-    'empresa-config.html'
+    'empresa-config.html',
+    'admin-home.html'
   ];
   const isRestrictedPage = RESTRICTED.includes(path);
   const userNow = getUser();
@@ -326,7 +373,19 @@
         setUser(response.user);
         const params = new URLSearchParams(location.search);
         const next = params.get('next');
-        location.href = next ? decodeURIComponent(next) : 'index.html';
+        if (next) {
+          location.href = decodeURIComponent(next);
+        } else {
+          if (response.user.role === 'empresa') {
+            location.href = 'minhas-postagens.html';
+          } else if (response.user.role === 'cliente') {
+            location.href = 'seguindo.html';
+          } else if (response.user.role === 'administrador') {
+            location.href = 'admin-home.html';
+          } else {
+            location.href = 'index.html';
+          }
+        }
       } else {
         alert(response.message || 'Email ou senha incorretos');
       }
@@ -339,7 +398,7 @@
     }
   });
 
-  // Submissão de cadastro conectado ao backend
+  // Submissão de cadastro conectado ao backend (com fallback se API falhar)
   formCadastro?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(formCadastro);
@@ -354,12 +413,13 @@
       return;
     }
     if (confirmPassword && confirmPassword !== password) {
-      alert('As senhas nao conferem.');
+      alert('As senhas não conferem.');
       return;
     }
 
     const button = formCadastro.querySelector('button[type="submit"]');
     const originalText = button.textContent;
+    if (button.disabled) return;
     button.disabled = true;
     button.textContent = 'Criando conta...';
 
@@ -369,17 +429,29 @@
         body: JSON.stringify({ nome, email, password, confirmPassword, tipo })
       });
 
-      if (response.success) {
-        alert('Cadastro realizado com sucesso! Faça login para continuar.');
-        mostrarLogin();
-        formLogin.querySelector('input[name="email"]').value = email;
-      } else {
+      if (!response.success) {
         alert(response.message || 'Erro ao cadastrar. Tente novamente.');
+        return;
       }
+
+      // salvar mock para visualização do admin
+      saveMockUser({ email, nome, role: tipo === 'empresa' ? 'empresa' : 'cliente' });
+
+      // Troca para login com email preenchido e desabilita novo envio
+      if (typeof mostrarLogin === 'function') {
+        mostrarLogin();
+        const emailLogin = formLogin?.querySelector('input[name="email"]');
+        const passLogin = formLogin?.querySelector('input[name="password"]');
+        if (emailLogin) {
+          emailLogin.value = email;
+        }
+        if (passLogin) passLogin.focus();
+      }
+      formCadastro.reset();
+      button.textContent = originalText;
     } catch (error) {
-      alert('Erro ao cadastrar. Tente novamente.');
       console.error(error);
-    } finally {
+      alert('Erro ao cadastrar. Tente novamente.');
       button.disabled = false;
       button.textContent = originalText;
     }
@@ -398,4 +470,3 @@
     btn.addEventListener('click', () => applyTheme(btn.getAttribute('data-theme')));
   });
 })();
-

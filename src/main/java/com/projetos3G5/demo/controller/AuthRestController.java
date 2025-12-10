@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -89,13 +90,12 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        boolean isAdminLogado = "ADMINISTRADOR".equals(session.getAttribute("usuarioTipo"));
         String tipoAcesso = "CLIENTE";
-        if (tipo != null && isAdminLogado) {
-            if (tipo.equalsIgnoreCase("empresa") || tipo.equalsIgnoreCase("administrador")) {
+        if (tipo != null) {
+            if (tipo.equalsIgnoreCase("empresa")) {
+                tipoAcesso = "EMPRESA";
+            } else if (tipo.equalsIgnoreCase("administrador")) {
                 tipoAcesso = "ADMINISTRADOR";
-            } else if (tipo.equalsIgnoreCase("cliente")) {
-                tipoAcesso = "CLIENTE";
             }
         }
 
@@ -118,6 +118,60 @@ public class AuthRestController {
             response.put("message", "Erro ao cadastrar. Email ja pode estar em uso.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    /**
+     * Atualiza o papel de um usuário (cliente <-> empresa/admin).
+     * Somente ADMINISTRADOR (super-usuário) pode chamar.
+     */
+    @PutMapping("/user/{id}/role")
+    public ResponseEntity<Map<String, Object>> atualizarRole(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> data,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        // Verifica permissão
+        String tipoLogado = (String) session.getAttribute("usuarioTipo");
+        if (!"ADMINISTRADOR".equalsIgnoreCase(tipoLogado)) {
+            response.put("success", false);
+            response.put("message", "Apenas administradores podem alterar o tipo de acesso.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
+        // Busca usuário alvo
+        Optional<Pessoa> pessoaOpt = repoCadastro.findById(id);
+        if (pessoaOpt.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Usuário não encontrado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        String novoTipo = data.getOrDefault("tipo", "").toLowerCase(Locale.ROOT);
+        String tipoAcesso;
+        if ("empresa".equals(novoTipo)) {
+            tipoAcesso = "EMPRESA";
+        } else if ("administrador".equals(novoTipo)) {
+            tipoAcesso = "ADMINISTRADOR";
+        } else {
+            tipoAcesso = "CLIENTE";
+        }
+
+        Pessoa pessoa = pessoaOpt.get();
+        pessoa.setTipoAcesso(tipoAcesso);
+        repoCadastro.save(pessoa);
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("id", pessoa.getId());
+        user.put("name", pessoa.getNome());
+        user.put("email", pessoa.getEmail());
+        user.put("role", pessoa.getTipoAcesso().toLowerCase());
+
+        response.put("success", true);
+        response.put("message", "Tipo de acesso atualizado para " + tipoAcesso + ".");
+        response.put("user", user);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/user")

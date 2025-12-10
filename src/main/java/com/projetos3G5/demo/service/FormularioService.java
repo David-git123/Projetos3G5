@@ -46,16 +46,6 @@ public class FormularioService {
 
         Pessoa criador = criadorOpt.get();
 
-        // Debug: verificar tipo de acesso
-        System.out.println("[DEBUG FORMULARIO] Tipo de acesso do usuário: '" + criador.getTipoAcesso() + "'");
-        System.out.println("[DEBUG FORMULARIO] É administrador? " + "ADMINISTRADOR".equalsIgnoreCase(criador.getTipoAcesso()));
-
-        // Validar se o usuário é administrador
-        if (!"ADMINISTRADOR".equalsIgnoreCase(criador.getTipoAcesso())) {
-            System.out.println("[DEBUG FORMULARIO] Usuário não é administrador. Tipo: " + criador.getTipoAcesso());
-            return null;
-        }
-
         // Validar dados do formulário
         if (titulo == null || titulo.trim().isEmpty()) {
             return null;
@@ -120,7 +110,7 @@ public class FormularioService {
         }
 
         Pessoa criador = criadorOpt.get();
-        if (!"ADMINISTRADOR".equalsIgnoreCase(criador.getTipoAcesso())) {
+        if (!isEmpresaOuAdmin(criador)) {
             return List.of();
         }
 
@@ -135,7 +125,7 @@ public class FormularioService {
         }
 
         Pessoa criador = criadorOpt.get();
-        if (!"ADMINISTRADOR".equalsIgnoreCase(criador.getTipoAcesso())) {
+        if (!isEmpresaOuAdmin(criador)) {
             return List.of();
         }
 
@@ -224,6 +214,16 @@ public class FormularioService {
         return "ADMINISTRADOR".equalsIgnoreCase(pessoa.getTipoAcesso());
     }
 
+    private boolean isEmpresaOuAdmin(Pessoa pessoa) {
+        String tipo = pessoa.getTipoAcesso() != null ? pessoa.getTipoAcesso().toUpperCase() : "";
+        return "ADMINISTRADOR".equals(tipo) || "EMPRESA".equals(tipo);
+    }
+
+    public boolean isEmpresaOuAdmin(Long usuarioId) {
+        Optional<Pessoa> pessoaOpt = repoCadastro.findById(usuarioId);
+        return pessoaOpt.isPresent() && isEmpresaOuAdmin(pessoaOpt.get());
+    }
+
     // Destinatários
     public List<FormularioDestinatario> listarDestinatarios(Long formularioId, Long criadorId) {
         Optional<Formulario> formularioOpt = buscarFormularioPorId(formularioId, criadorId);
@@ -305,4 +305,3 @@ public class FormularioService {
 
     // manter aqui sem redefinir (já movido para a posição anterior)
 }
-

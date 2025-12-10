@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
@@ -18,156 +18,93 @@
     />
     <link rel="stylesheet" href="assets/styles.css" />
     <style>
-      /* Ajustes visuais alinhados ao protótipo da tela de empresas parceiras */
+      /* Layout: 5 bolinhas por linha, 2 linhas */
       body[data-page="partners"] {
-        background: #d6d9df;
-      }
-      body[data-page="partners"] .partners-shell {
-        max-width: 1200px;
-        margin: 0 auto 32px;
-        padding: 0;
-        background: transparent;
-        border: 1px solid #d5d5d5;
-        border-top: none;
-        border-radius: 0 0 10px 10px;
-        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
-        overflow: hidden;
-      }
-      body[data-page="partners"] .partners-hero {
         background: #c7ddf7;
-        padding: 32px 32px 44px;
       }
-      body[data-page="partners"] .partners-grid {
+      main.partners-full {
+        width: 100%;
+        min-height: 100vh;
+        background: #c7ddf7;
+        margin: 0;
+        padding: 32px 24px 48px;
+        box-sizing: border-box;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 42px 28px;
+        place-items: center;
       }
-      body[data-page="partners"] .partner-card {
-        align-items: flex-start;
-        gap: 12px;
+      .partners-grid {
+        width: 100%;
+        max-width: 1280px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 36px 32px;
+        justify-items: center;
+        align-items: start;
+      }
+      .partner-card {
+        display: grid;
+        gap: 10px;
+        align-items: center;
+        justify-items: center;
+        text-align: center;
         color: #0f172a;
       }
-      body[data-page="partners"] .partner-thumb {
-        width: 132px;
-        height: 132px;
+      .partner-thumb {
+        width: 180px;
+        height: 180px;
         border-radius: 50%;
         background: #cfcfcf;
         box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
-        position: relative;
       }
-      body[data-page="partners"] .partner-badge {
-        position: absolute;
-        top: 8px;
-        right: 6px;
-        width: 34px;
-        height: 34px;
-        border-radius: 50% 50% 50% 0;
-        background: #1586e7;
-        color: #ffffff;
-        display: grid;
-        place-items: center;
-        font-weight: 700;
-        box-shadow: 0 8px 14px rgba(21, 134, 231, 0.35);
-        font-size: 1rem;
-      }
-      body[data-page="partners"] .partner-name {
+      .partner-name {
         margin: 0;
         font-size: 1.05rem;
         font-weight: 600;
-        line-height: 1.3;
-        color: #0f172a;
+        line-height: 1.35;
       }
-      body[data-page="partners"] .partners-state {
-        display: none;
-        font-weight: 600;
-        color: #0f172a;
-        margin-bottom: 12px;
+      @media (max-width: 900px) {
+        .partners-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 28px 22px;
+        }
+        .partner-thumb { width: 160px; height: 160px; }
       }
-      @media (max-width: 768px) {
-        body[data-page="partners"] .site-header {
-          width: calc(100% - 24px);
+      @media (max-width: 640px) {
+        .partners-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px 16px;
         }
-        body[data-page="partners"] .partners-hero {
-          padding: 24px 18px 32px;
-        }
-        body[data-page="partners"] .partners-grid {
-          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-          gap: 28px 18px;
-        }
+        .partner-thumb { width: 140px; height: 140px; }
       }
     </style>
   </head>
   <body data-page="partners">
-    <header class="site-header">
-      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="index.html">Início</a>
-        <a href="quem-somos.html" class="requires-guest">Quem somos</a>
+    <header class="site-header site-header-full"><a href="index.html" class="brand" aria-label="CARE Home">CARE</a><nav class="main-nav" aria-label="Principal"><a href="index.html">Início</a><a href="quem-somos.html" class="requires-guest">Quem somos</a>
         <a href="empresas.html" class="requires-guest" aria-current="page">Empresas parceiras</a>
         <a href="seguindo.html" class="requires-auth requires-role-cliente">Seguindo</a>
         <a href="minhas-pesquisas.html" class="requires-auth requires-role-cliente">Minhas Pesquisas</a>
         <a href="minhas-postagens.html" class="requires-auth requires-role-empresa">Minhas postagens</a>
         <a href="criacao-de-pesquisa.html" class="requires-auth requires-role-empresa">Montar pesquisa</a>
         <a href="login.html" class="requires-guest">Login</a>
-        <a href="login.html#cadastro" class="requires-guest">Cadastre-se</a>
       </nav>
       <nav class="user-nav" aria-label="Acesso"></nav>
     </header>
 
-    <main class="partners-shell">
-      <section class="partners-hero" aria-label="Empresas parceiras">
-        <div id="loading" class="partners-state" aria-live="polite">Carregando empresas...</div>
-        <div id="emptyState" class="partners-state" aria-live="polite"></div>
-        <section class="partners-grid" id="lista-parceiras" aria-live="polite">
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb">
-              <span class="partner-badge" aria-hidden="true">A</span>
-            </div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-          <article class="partner-card">
-            <div class="partner-thumb"></div>
-            <p class="partner-name">Lorem ipsum dolor sit amet,</p>
-          </article>
-        </section>
+    <main class="partners-full">
+      <section class="partners-grid" aria-label="Empresas parceiras">
+        <!-- 10 bolinhas em 2 fileiras -->
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
+        <article class="partner-card"><div class="partner-thumb"></div><p class="partner-name">Lorem ipsum dolor sit amet,</p></article>
       </section>
     </main>
-
-    <footer class="site-footer">
-      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
-    </footer>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -175,29 +112,6 @@
       crossorigin="anonymous"
     ></script>
     <script src="assets/app.js"></script>
-    <script>
-      // Listar empresas (usuários do tipo ADMINISTRADOR)
-      (async function() {
-        const loading = document.getElementById('loading');
-        const listaParceiras = document.getElementById('lista-parceiras');
-        const emptyState = document.getElementById('emptyState');
-        
-        try {
-          // Buscar todas as empresas (endpoint seria criado no backend)
-          // Por enquanto, vamos mostrar uma mensagem
-          loading.style.display = 'none';
-          emptyState.style.display = 'block';
-          emptyState.innerHTML = `
-            <p class="muted">Funcionalidade de listagem de empresas será implementada em breve.</p>
-            <p class="muted" style="margin-top:1rem;">As empresas cadastradas aparecerão aqui.</p>
-          `;
-        } catch (error) {
-          console.error('Erro ao carregar empresas:', error);
-          loading.style.display = 'none';
-          emptyState.style.display = 'block';
-        }
-      })();
-    </script>
   </body>
-  </html>
+</html>
 

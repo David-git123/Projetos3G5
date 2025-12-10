@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Configurações</title>
+    <title>CARE â€” ConfiguraÃ§Ãµes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,38 +18,45 @@
     />
     <link rel="stylesheet" href="assets/styles.css" />
     <style>
-      /* Visual para a suíte de configurações (temas, privacidade, info, ajuda) */
+      /* Visual para a suíte de configurações */
       body[data-page="config"] {
-        background: #d6d9df;
+        background: #c7ddf7;
+        margin: 0;
       }
       body[data-page="config"] .site-header {
         position: static;
-        width: min(1200px, calc(100% - 32px));
+        width: min(1200px, calc(100% - 24px));
         margin: 18px auto 0;
-        border-radius: 12px 12px 0 0;
-        border: 1px solid #d5d5d5;
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 8px 14px rgba(0, 0, 0, 0.14);
         background: #ffffff;
         padding: 14px 22px;
       }
       .config-shell {
+        width: 100%;
         max-width: 1200px;
-        margin: 0 auto 38px;
-        background: #c7ddf7;
-        border: 1px solid #d5d5d5;
-        border-top: none;
-        border-radius: 0 0 12px 12px;
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
-        padding: 28px 24px 40px;
+        margin: 16px auto 42px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        display: grid;
+        place-items: center;
+      }
+      .config-card {
+        width: 100%;
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 16px 28px rgba(0, 0, 0, 0.16);
+        padding: 28px 24px;
         display: grid;
         grid-template-columns: minmax(260px, 320px) 1fr;
-        gap: 36px;
+        gap: 32px;
       }
       .profile-panel {
-        background: #ffffff;
+        background: #f8f8f8;
         border-radius: 14px;
         padding: 20px 16px;
-        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
         border: 1px solid #e1e1e1;
       }
       .profile-avatar {
@@ -96,81 +103,82 @@
         border: 1px solid #0b6eca;
       }
       @media (max-width: 900px) {
-        .config-shell {
+        .config-card {
           grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body data-page="config">
-    <header class="site-header config-header">
-      <a href="index.html" class="brand" aria-label="CARE Home">CARE</a>
-
-      <!-- Header para cliente -->
-      <nav class="main-nav cliente-nav requires-role-cliente" aria-label="Principal">
-        <a href="cliente-home.html">Início</a>
-        <a href="seguindo.html">Seguindo</a>
+    <header class="site-header config-header"><!-- Header para cliente -->
+      <a href="seguindo.html" class="brand requires-role-cliente" aria-label="CARE Home">CARE</a><nav class="main-nav cliente-nav requires-role-cliente" aria-label="Principal"><a href="seguindo.html">Seguindo</a>
         <a href="minhas-pesquisas.html">Minhas pesquisas</a>
       </nav>
 
       <!-- Header para empresa -->
-      <nav class="main-nav empresa-nav requires-role-empresa" aria-label="Principal">
-        <a href="empresa-home.html">Início</a>
+      <a href="minhas-postagens.html" class="brand requires-role-empresa" aria-label="CARE Home">CARE</a><nav class="main-nav empresa-nav requires-role-empresa" aria-label="Principal"><a href="minhas-postagens.html">Minhas postagens</a>
+        <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
+      </nav>
+
+      <!-- Header para super usuário -->
+      <a href="admin-home.html" class="brand requires-role-admin" aria-label="CARE Home">CARE</a><nav class="main-nav empresa-nav requires-role-admin" aria-label="Principal"><a href="admin-home.html">Início</a>
         <a href="minhas-postagens.html">Minhas postagens</a>
         <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
       </nav>
 
       <div class="cliente-user requires-role-cliente">
-        <span class="user-name" data-bind="user-name">Késia Carvalho</span>
-        <a class="avatar" href="configuracoes.html" title="Configurações"></a>
+        <span class="user-name" data-bind="user-name">KÃ©sia Carvalho</span>
+        <a class="avatar" href="configuracoes.html" title="ConfiguraÃ§Ãµes"></a>
       </div>
       <div class="empresa-user requires-role-empresa">
         <span class="user-name" data-bind="user-name">Roberto Rodrigues</span>
+        <a class="avatar" href="configuracoes.html" title="ConfiguraÃ§Ãµes"></a>
+      </div>
+      <div class="empresa-user requires-role-admin">
+        <span class="user-name" data-bind="user-name">Super</span>
         <a class="avatar" href="configuracoes.html" title="Configurações"></a>
       </div>
     </header>
 
     <main class="config-shell">
-      <aside class="profile-panel">
-        <div class="profile-avatar"></div>
-        <div class="profile-name" data-bind="user-name">Késia Carvalho</div>
-        <small class="muted">Configurações</small>
-        <nav class="profile-menu">
-        <a class="active" href="#info">Informações pessoais</a>
-        <a href="#temas">Opções de temas</a>
-        <a href="#privacidade">Privacidade</a>
-        <button type="button" class="menu-btn-link" id="btnAjudaDummy">Ajuda</button>
-        <a href="#" id="linkSair" style="color:#dc3545;">Sair</a>
-      </nav>
-      </aside>
+      <div class="config-card">
+        <aside class="profile-panel">
+          <div class="profile-avatar"></div>
+          <div class="profile-name" data-bind="user-name">Késia Carvalho</div>
+          <small class="muted">Configurações</small>
+          <nav class="profile-menu">
+            <a class="active" href="#info">Informações pessoais</a>
+            <a href="#temas">Opções de temas</a>
+            <a href="#privacidade">Privacidade</a>
+            <button type="button" class="menu-btn-link" id="btnAjudaDummy">Ajuda</button>
+            <a href="#" id="linkSair" style="color:#dc3545;">Sair</a>
+          </nav>
+        </aside>
 
-      <section class="profile-details">
-        <div class="profile-header">
-          <div class="profile-avatar small"></div>
-          <div>
-            <div class="muted">Avatar</div>
-            <small class="muted">Para mudar o avatar, clique no ícone ao lado do círculo</small>
+        <section class="profile-details">
+          <div class="profile-header">
+            <div class="profile-avatar small"></div>
+            <div>
+              <div class="muted">Avatar</div>
+              <small class="muted">Para mudar o avatar, clique no ícone ao lado do círculo</small>
+            </div>
           </div>
-        </div>
 
-        <div class="profile-field">
-          <label for="nomePerfil">Nome</label>
-          <input id="nomePerfil" type="text" value="Késia Carvalho" />
-        </div>
-        <div class="profile-field">
-          <label for="bioPerfil">Bio</label>
-          <textarea id="bioPerfil" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
-        </div>
-        <div class="profile-actions">
-          <button class="btn btn-primary" type="button">Salvar alterações</button>
-          <button class="btn btn-ghost" type="button">Cancelar</button>
-        </div>
-      </section>
+          <div class="profile-field">
+            <label for="nomePerfil">Nome</label>
+            <input id="nomePerfil" type="text" value="Késia Carvalho" />
+          </div>
+          <div class="profile-field">
+            <label for="bioPerfil">Bio</label>
+            <textarea id="bioPerfil" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-primary" type="button">Salvar alterações</button>
+            <button class="btn btn-ghost" type="button">Cancelar</button>
+          </div>
+        </section>
+      </div>
     </main>
-
-    <footer class="site-footer">
-      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
-    </footer>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -199,7 +207,7 @@
             }
             
             if (novaSenha !== confirmarSenha) {
-              mostrarMensagem('As senhas não coincidem.', 'error');
+              mostrarMensagem('As senhas nÃ£o coincidem.', 'error');
               return;
             }
             
@@ -266,7 +274,7 @@
           }, 5000);
         }
       })();
-      // Logout rápido
+      // Logout rÃ¡pido
       document.getElementById('linkSair')?.addEventListener('click', async (e) => {
         e.preventDefault();
         try { await fetch('/api/auth/logout', { method:'POST', credentials:'include' }); } catch(_) {}
@@ -283,7 +291,7 @@
         }
       })();
 
-      // Botão de Ajuda não navega
+      // BotÃ£o de Ajuda nÃ£o navega
       document.getElementById('btnAjudaDummy')?.addEventListener('click', (e) => e.preventDefault());
     </script>
   </body>

@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Editar pesquisa</title>
+    <title>CARE â€” Editar pesquisa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,11 +19,7 @@
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body data-page="empresa-montar">
-    <header class="site-header">
-      <a href="empresa-home.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav" aria-label="Principal">
-        <a href="empresa-home.html">Início</a>
-        <a href="minhas-postagens.html">Minhas postagens</a>
+    <header class="site-header"><nav class="main-nav" aria-label="Principal"><a href="minhas-postagens.html">Minhas postagens</a>
         <a href="criacao-de-pesquisa.html">Montar pesquisa</a>
       </nav>
       <nav class="user-nav" aria-label="Acesso"></nav>
@@ -38,11 +34,11 @@
       <section class="card">
         <form class="form" id="editForm">
           <label>
-            <span>Título</span>
+            <span>TÃ­tulo</span>
             <input type="text" id="editTitulo" required />
           </label>
           <label>
-            <span>Descrição</span>
+            <span>DescriÃ§Ã£o</span>
             <textarea id="editDescricao" rows="3"></textarea>
           </label>
           <label>
@@ -62,10 +58,6 @@
       </section>
     </main>
 
-    <footer class="site-footer">
-      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
-    </footer>
-
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -84,11 +76,11 @@
         const status = document.getElementById('editStatus');
 
         async function carregar() {
-          if (!id) { info.textContent = 'ID inválido.'; return; }
+          if (!id) { info.textContent = 'ID invÃ¡lido.'; return; }
           const resp = await fetch(`/api/formularios/${id}`, { credentials:'include' });
           const data = await resp.json();
           if (!data.success || !data.formulario) {
-            info.textContent = data.message || 'Não foi possível carregar.';
+            info.textContent = data.message || 'NÃ£o foi possÃ­vel carregar.';
             return;
           }
           const f = data.formulario;
@@ -122,7 +114,7 @@
           const resp = await fetch(`/api/formularios/${id}`, { method:'DELETE', credentials:'include' });
           const data = await resp.json();
           if (data.success) {
-            alert('Excluída.');
+            alert('ExcluÃ­da.');
             location.href = 'criacao-de-pesquisa.html';
           } else {
             alert(data.message || 'Erro ao excluir.');
@@ -134,3 +126,4 @@
     </script>
   </body>
 </html>
+

@@ -29,7 +29,10 @@
             <span>E-mail (opcional)</span>
             <input type="email" id="respEmail" placeholder="seu@email.com" />
           </label>
-          <button type="submit" class="btn btn-primary" id="respEnviar">Enviar respostas</button>
+          <div style="display:grid; gap:10px;">
+            <button type="submit" class="btn btn-primary" id="respEnviar">Registrar resposta</button>
+            <button type="button" class="btn btn-ghost" id="respDepois">Responder depois</button>
+          </div>
           <div id="respMensagem" class="muted" style="display:none; margin-top:8px;"></div>
         </form>
       </section>
@@ -51,6 +54,19 @@
         const msgEl = document.getElementById('respMensagem');
         const form = document.getElementById('respForm');
         const emailRow = document.getElementById('respEmailRow');
+        const btnDepois = document.getElementById('respDepois');
+        const u = JSON.parse(localStorage.getItem('care:user') || 'null');
+        const PROGRESS_KEY = 'care:form-progress';
+
+        function updateProgress(status) {
+          if (!u || !u.email || !id) return;
+          try {
+            const all = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+            all[u.email] = all[u.email] || {};
+            all[u.email][id] = status;
+            localStorage.setItem(PROGRESS_KEY, JSON.stringify(all));
+          } catch {}
+        }
 
         async function carregarFormulario() {
           if (!id) {
@@ -78,12 +94,18 @@
             `).join('');
           }
           // Se não há usuário logado, mostrar campo de email opcional
-          const u = JSON.parse(localStorage.getItem('care:user') || 'null');
           if (!u) emailRow.style.display = 'grid';
         }
 
         form?.addEventListener('submit', async (e) => {
           e.preventDefault();
+          // Bloqueia empresas de responder
+          if (u && u.role === 'empresa') {
+            msgEl.style.display = 'block';
+            msgEl.textContent = 'Apenas clientes podem registrar respostas.';
+            msgEl.style.color = '#b00020';
+            return;
+          }
           msgEl.style.display = 'none';
           const respostas = [];
           document.querySelectorAll('input[data-pergunta]').forEach(inp => {
@@ -107,13 +129,24 @@
             const data = await resp.json();
             msgEl.style.display = 'block';
             msgEl.textContent = data.message || (data.success ? 'Resposta registrada.' : 'Erro ao enviar.');
+            msgEl.style.color = data.success ? '#155724' : '#b00020';
+            if (data.success) {
+              updateProgress('RESPONDIDO');
+              setTimeout(() => { location.href = 'minhas-pesquisas.html'; }, 800);
+            }
           } catch (err) {
             msgEl.style.display = 'block';
             msgEl.textContent = 'Erro ao enviar.';
+            msgEl.style.color = '#b00020';
           } finally {
             btn.disabled = false;
             btn.textContent = txt;
           }
+        });
+
+        btnDepois?.addEventListener('click', () => {
+          updateProgress('ANDAMENTO');
+          location.href = 'minhas-pesquisas.html';
         });
 
         carregarFormulario();

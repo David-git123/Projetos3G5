@@ -13,6 +13,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(0);
+        // Expor imagens da pasta Integrantes (fora de static) para uso no Quem Somos
+        registry.addResourceHandler("/Integrantes/**")
+                .addResourceLocations("file:./Integrantes/")
+                .setCachePeriod(0);
     }
 
     @Override
@@ -24,4 +28,3 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 }
-

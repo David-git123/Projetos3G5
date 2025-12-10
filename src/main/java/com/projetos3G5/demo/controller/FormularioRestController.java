@@ -71,10 +71,11 @@ public class FormularioRestController {
         System.out.println("[DEBUG CRIAR FORM] Tipo de acesso: " + pessoa.getTipoAcesso());
         System.out.println("[DEBUG CRIAR FORM] Email: " + pessoa.getEmail());
         
-        // Verificar tipo antes de tentar criar
-        if (!"ADMINISTRADOR".equalsIgnoreCase(pessoa.getTipoAcesso())) {
+        // Verificar tipo antes de tentar criar — empresas e administradores podem
+        String tipo = pessoa.getTipoAcesso() != null ? pessoa.getTipoAcesso().toUpperCase() : "";
+        if (!"ADMINISTRADOR".equals(tipo) && !"EMPRESA".equals(tipo)) {
             response.put("success", false);
-            response.put("message", "Erro ao criar formulário. Você precisa ser ADMINISTRADOR. Seu tipo atual: " + pessoa.getTipoAcesso());
+            response.put("message", "Erro ao criar formulário. Apenas EMPRESA ou ADMINISTRADOR podem criar. Seu tipo atual: " + pessoa.getTipoAcesso());
             response.put("tipoUsuario", pessoa.getTipoAcesso());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
@@ -333,9 +334,9 @@ public class FormularioRestController {
             response.put("message", "Usuário não autenticado");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
-        if (!formularioService.isAdministrador(usuarioId)) {
+        if (!formularioService.isEmpresaOuAdmin(usuarioId)) {
             response.put("success", false);
-            response.put("message", "Apenas administradores podem atribuir destinatários");
+            response.put("message", "Apenas empresas ou administradores podem atribuir destinatários");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
 
@@ -424,4 +425,3 @@ public class FormularioRestController {
         return map;
     }
 }
-

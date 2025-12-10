@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CARE — Minhas Pesquisas</title>
+    <title>CARE — Minhas pesquisas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,74 +18,26 @@
     />
     <link rel="stylesheet" href="assets/styles.css" />
     <style>
-      /* Visual alinhado ao protótipo "Minhas pesquisas" */
       body[data-page="pesquisas"] {
-        background: #d6d9df;
-      }
-      body[data-page="pesquisas"] .site-header {
-        position: static;
-        width: min(1200px, calc(100% - 32px));
-        margin: 18px auto 0;
-        border-radius: 12px 12px 0 0;
-        border: 1px solid #d5d5d5;
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
-        background: #ffffff;
-        padding: 12px 22px;
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        gap: 24px;
-      }
-      body[data-page="pesquisas"] .brand {
-        background: url('assets/logo-horizontal.png') no-repeat left center / contain;
-        width: 180px;
-        height: 48px;
-        text-indent: -9999px;
-      }
-      body[data-page="pesquisas"] .main-nav {
-        justify-content: center;
-        gap: 26px;
-      }
-      body[data-page="pesquisas"] .main-nav a {
-        color: #7a7a7a;
-        font-weight: 700;
-        background: none;
-        border: none;
-        box-shadow: none;
-        padding: 10px 6px;
-      }
-      body[data-page="pesquisas"] .main-nav a[aria-current="page"] {
-        color: #3b9cf3;
-      }
-      .pesq-user {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 700;
+        margin: 0;
+        background: #e5f1ff;
+        font-family: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
         color: #0f172a;
       }
-      .pesq-user .avatar {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #f1f1f1, #d9d9d9);
-        border: 2px solid #ffffff;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
-      }
-      .pesquisas-shell {
+      .pesquisas-area {
+        width: 100%;
         max-width: 1200px;
-        margin: 0 auto 38px;
+        margin: 32px auto 48px;
         background: #c7ddf7;
-        border: 1px solid #d5d5d5;
-        border-top: none;
-        border-radius: 0 0 12px 12px;
+        border-radius: 16px;
         box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
         padding: 28px 24px 40px;
         display: grid;
         grid-template-columns: minmax(260px, 320px) 1fr;
         gap: 36px;
+        box-sizing: border-box;
       }
-      .pesquisas-menu {
+      .painel {
         background: #ffffff;
         border-radius: 14px;
         padding: 18px 16px;
@@ -94,7 +46,7 @@
         display: grid;
         gap: 14px;
       }
-      .pesquisas-menu .menu-btn {
+      .painel .menu-btn {
         width: 100%;
         text-align: left;
         display: inline-flex;
@@ -107,102 +59,85 @@
         font-weight: 800;
         color: #1d1d1d;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
       }
-      .pesquisas-menu .menu-btn.primary {
+      .painel .menu-btn.active {
         box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
         background: #ffffff;
       }
-      .pesquisas-menu .menu-icon {
+      .painel .menu-icon {
         width: 32px;
         height: 32px;
-        border-radius: 6px;
-        background: #1f1f1f;
         display: grid;
         place-items: center;
-        color: #ffffff;
-        font-weight: 900;
+        color: #111111;
       }
-      .survey-list {
-        align-self: start;
-      }
-      .survey-grid {
+      .grid-pesquisas {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 42px 28px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px 20px;
+        align-items: start;
       }
-      .survey-grid .card {
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        display: grid;
-        gap: 10px;
-      }
-      .survey-grid .ph {
-        width: 132px;
-        height: 132px;
-        border-radius: 8px;
-        background: #cfcfcf;
-        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
-      }
-      .survey-grid h3 {
-        margin: 0;
-        font-size: 1rem;
-        font-weight: 600;
-      }
-      .survey-grid p {
-        margin: 0;
+      .empty-state {
+        grid-column: 1 / -1;
+        font-weight: 700;
         color: #0f172a;
-        font-weight: 600;
-        line-height: 1.3;
       }
-      @media (max-width: 900px) {
-        .pesquisas-shell {
+      .tile {
+        display: grid;
+        gap: 8px;
+        justify-items: start;
+        color: #0f172a;
+      }
+      .tile .thumb {
+        width: 160px;
+        height: 160px;
+        border-radius: 12px;
+        background: #d0d0d0;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
+      }
+      .tile p {
+        margin: 0;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+      @media (max-width: 960px) {
+        .pesquisas-area {
           grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body data-page="pesquisas">
-    <header class="site-header cliente-header">
-      <a href="cliente-home.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav cliente-nav" aria-label="Principal">
-        <a href="cliente-home.html">Início</a>
-        <a href="seguindo.html">Seguindo</a>
+    <header class="site-header cliente-header"><a href="seguindo.html" class="brand" aria-label="CARE Home">CARE</a><nav class="main-nav cliente-nav" aria-label="Principal"><a href="seguindo.html">Seguindo</a>
         <a href="minhas-pesquisas.html" aria-current="page">Minhas pesquisas</a>
       </nav>
       <div class="cliente-user">
-        <span class="user-name" data-bind="user-name">Késia Carvalho</span>
+        <span class="user-name" data-bind="user-name">Cliente</span>
         <a class="avatar" href="configuracoes.html" title="Configurações"></a>
       </div>
     </header>
 
-    <main class="pesquisas-shell">
-      <aside class="pesquisas-menu" aria-label="Filtros de pesquisas">
-        <button class="menu-btn primary" type="button">
-          <span class="menu-icon">■</span>
+    <main class="pesquisas-area">
+      <aside class="painel" aria-label="Ações de pesquisa">
+        <button class="menu-btn active" type="button" data-filter="nao-respondidas">
+          <span class="menu-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M6 2h8l4 4v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm7 1.5V7h3.5L13 3.5ZM11 7a1 1 0 1 0-2 0v3H6a1 1 0 0 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 0 0 0-2h-3V7Z"/></svg></span>
           Pesquisas não respondidas
         </button>
-        <button class="menu-btn" type="button">
-          <span class="menu-icon">■</span>
+        <button class="menu-btn" type="button" data-filter="andamento">
+          <span class="menu-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4.5A2.5 2.5 0 0 1 8.5 2h9A2.5 2.5 0 0 1 20 4.5v9A2.5 2.5 0 0 1 17.5 16h-9A2.5 2.5 0 0 1 6 13.5v-9ZM8.5 4a.5.5 0 0 0-.5.5V6h10V4.5a.5.5 0 0 0-.5-.5h-9ZM18 8H8v5.5a.5.5 0 0 0 .5.5H18V8Zm-13 3v6.5A2.5 2.5 0 0 0 7.5 20H16v-2H7.5a.5.5 0 0 1-.5-.5V11H5Z"/></svg></span>
           Pesquisas em andamento
         </button>
-        <button class="menu-btn" type="button">
-          <span class="menu-icon">■</span>
+        <button class="menu-btn" type="button" data-filter="respondidas">
+          <span class="menu-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M10 2a1 1 0 0 0-1 1v1H5.5a1 1 0 0 0-.964.738L4.05 6H3a1 1 0 1 0 0 2h1v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8h1a1 1 0 1 0 0-2h-1.05l-.486-1.262A1 1 0 0 0 18.5 4H15V3a1 1 0 0 0-1-1h-4Zm1 2h2V4h-2v0ZM8 8h10v11H6V8h2Zm3 2a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1Zm4 0a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0v-6a1 1 0 0 0-1-1Z"/></svg></span>
           Pesquisas respondidas
         </button>
       </aside>
 
-      <section class="survey-list">
-        <div id="loading" class="muted">Carregando pesquisas...</div>
-        <div id="emptyState" class="muted" style="display:none;">Nenhuma pesquisa recebida.</div>
-        <div id="listaFormularios" class="survey-grid" style="display:none;"></div>
+      <section class="grid-pesquisas" aria-label="Pesquisas" id="listaFormularios">
+        <div class="empty-state" id="emptyState" style="display:none;">Nenhuma pesquisa disponível.</div>
       </section>
     </main>
-
-    <footer class="site-footer">
-      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
-    </footer>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -210,41 +145,100 @@
       crossorigin="anonymous"
     ></script>
     <script src="assets/app.js"></script>
-    <script>
-      (async function() {
-        const loading = document.getElementById('loading');
-        const lista = document.getElementById('listaFormularios');
-        const empty = document.getElementById('emptyState');
-        try {
-          const resp = await fetch('/api/formularios/recebidos', { credentials:'include' });
-          const data = await resp.json();
-          loading.style.display = 'none';
-          if (!data.success || !data.formularios || data.formularios.length === 0) {
-            empty.style.display = 'block';
+      <script>
+      (function() {
+        const lista = document.getElementById("listaFormularios");
+        const empty = document.getElementById("emptyState");
+        const botoes = document.querySelectorAll('.painel .menu-btn');
+        let formularios = [];
+        let filtroAtual = 'nao-respondidas';
+
+        function loadProgress() {
+          try {
+            const u = JSON.parse(localStorage.getItem('care:user') || 'null');
+            if (!u || !u.email) return {};
+            const all = JSON.parse(localStorage.getItem('care:form-progress') || '{}');
+            return all[u.email] || {};
+          } catch { return {}; }
+        }
+        function saveProgress(map) {
+          try {
+            const u = JSON.parse(localStorage.getItem('care:user') || 'null');
+            if (!u || !u.email) return;
+            const all = JSON.parse(localStorage.getItem('care:form-progress') || '{}');
+            all[u.email] = map;
+            localStorage.setItem('care:form-progress', JSON.stringify(all));
+          } catch {}
+        }
+
+        function render() {
+          if (!lista) return;
+           const progress = loadProgress();
+          const filtrados = formularios.filter(f => {
+            const id = f.id || f.formularioId;
+            const status = (progress[id] || f.status || '').toUpperCase();
+            if (filtroAtual === 'nao-respondidas') return status !== 'RESPONDIDO' && status !== 'ANDAMENTO';
+            if (filtroAtual === 'andamento') return status === 'ANDAMENTO';
+            if (filtroAtual === 'respondidas') return status === 'RESPONDIDO';
+            return true;
+          });
+          if (filtrados.length === 0) {
+            lista.innerHTML = '';
+            if (empty) empty.style.display = 'block';
             return;
           }
-          lista.style.display = 'grid';
-          lista.innerHTML = data.formularios.map(f => `
-            <article class="card">
-              <div class="ph"></div>
-              <h3>${escapeHtml(f.titulo || 'Sem título')}</h3>
-              <p>${escapeHtml(f.descricao || 'Sem descrição')}</p>
-              <a class="card-link" href="responder-formulario.html?id=${f.id}">Responder</a>
-            </article>
-          `).join('');
-        } catch (e) {
-          loading.style.display = 'none';
-          empty.style.display = 'block';
-          empty.textContent = 'Erro ao carregar pesquisas.';
+          if (empty) empty.style.display = 'none';
+          lista.innerHTML = filtrados
+            .map(f => {
+              const id = f.id || f.formularioId || '';
+              const link = id ? `responder-formulario.html?id=${id}` : '#';
+              const progress = loadProgress();
+              const status = (progress[id] || f.status || '').toUpperCase();
+              const isRespondido = status === 'RESPONDIDO';
+              return `
+              <article class="tile">
+                <div class="thumb"></div>
+                <p>${escapeHtml(f.titulo || 'Lorem ipsum dolor sit amet,')}</p>
+                ${id ? `<a class="btn btn-primary" style="margin-top:6px;" href="${link}" ${isRespondido ? 'aria-disabled="true"' : ''}>${isRespondido ? 'Visualizar resposta' : 'Responder formulário'}</a>` : ''}
+              </article>
+              `;
+            })
+            .join('');
         }
-      })();
 
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      }
+        function escapeHtml(text) {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        async function carregar() {
+          try {
+            const resp = await fetch('/api/formularios/recebidos', { credentials: 'include' });
+            const data = await resp.json();
+            if (!data.success || !data.formularios) {
+              formularios = [];
+            } else {
+              formularios = data.formularios;
+            }
+            render();
+          } catch (e) {
+            formularios = [];
+            render();
+          }
+        }
+
+        botoes.forEach(btn => {
+          btn.addEventListener('click', () => {
+            botoes.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filtroAtual = btn.getAttribute('data-filter') || 'nao-respondidas';
+            render();
+          });
+        });
+
+        carregar();
+      })();
     </script>
   </body>
 </html>
-

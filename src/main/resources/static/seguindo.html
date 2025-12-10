@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
@@ -17,12 +17,87 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="assets/styles.css" />
+    <style>
+      body[data-page="seguindo"] {
+        background: #c7ddf7;
+        margin: 0;
+      }
+      .seguindo-area {
+        width: 100%;
+        min-height: calc(100vh - 130px);
+        padding: 28px 24px 40px;
+        box-sizing: border-box;
+        display: grid;
+        gap: 18px;
+      }
+      .search-bar {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #ffffff;
+        border-radius: 26px;
+        padding: 8px 14px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+        width: min(360px, 100%);
+        height: 44px;
+      }
+      .search-bar .icon {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        background: center/contain no-repeat url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='16.65' y1='16.65' x2='21' y2='21'%3E%3C/line%3E%3C/svg%3E");
+      }
+      .search-bar input {
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        font-size: 0.95rem;
+      }
+      .follow-list {
+        display: grid;
+        gap: 18px;
+      }
+      .follow-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12);
+        display: grid;
+        grid-template-columns: minmax(280px, 1.2fr) 1fr;
+        gap: 18px;
+        padding: 18px;
+        align-items: center;
+      }
+      .follow-card img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 14px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+      }
+      .follow-info h3 {
+        margin: 0 0 8px;
+        font-weight: 800;
+        font-size: 1.25rem;
+      }
+      .follow-info p {
+        margin: 0;
+        font-size: 1.05rem;
+        line-height: 1.5;
+        color: #1a1a1a;
+      }
+      @media (max-width: 960px) {
+        .follow-card {
+          grid-template-columns: 1fr;
+        }
+        .follow-card img {
+          height: 260px;
+        }
+      }
+    </style>
   </head>
   <body data-page="seguindo">
-    <header class="site-header cliente-header">
-      <a href="cliente-home.html" class="brand" aria-label="CARE Home">CARE</a>
-      <nav class="main-nav cliente-nav" aria-label="Principal">
-        <a href="cliente-home.html">Início</a>
+    <header class="site-header cliente-header"><a href="index.html" class="brand" aria-label="CARE Home">CARE</a><nav class="main-nav cliente-nav" aria-label="Principal">
         <a href="seguindo.html" aria-current="page">Seguindo</a>
         <a href="minhas-pesquisas.html">Minhas pesquisas</a>
       </nav>
@@ -32,33 +107,14 @@
       </div>
     </header>
 
-    <main class="client-shell">
-      <div class="client-search">
-        <span class="icon">🔍</span>
-        <input type="text" placeholder="Buscando alguma empresa?" />
+    <main class="seguindo-area">
+      <div class="search-bar">
+        <span class="icon" aria-hidden="true"></span>
+        <input type="text" id="searchEmpresa" placeholder="Buscando alguma empresa?" />
       </div>
 
-      <section class="follow-feature">
-        <div class="follow-media">
-          <span class="badge-dot">A</span>
-        </div>
-        <div class="follow-details">
-          <div class="company-avatar"></div>
-          <div>
-            <h3>Empresa</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi scelerisque mattis velit,
-              nec aliquam urna. Aenean sed odio et mauris elementum malesuada. Ut odio dui, auctor nec
-              nibh at, congue convallis erat. Mauris posuere dui sit amet sodales aliquet.
-            </p>
-          </div>
-        </div>
-      </section>
+      <section class="follow-list" id="listaEmpresas" aria-label="Empresas seguidas"></section>
     </main>
-
-    <footer class="site-footer">
-      <small>© <span id="ano"></span> CARE — Todos os direitos reservados.</small>
-    </footer>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -66,7 +122,64 @@
       crossorigin="anonymous"
     ></script>
     <script src="assets/app.js"></script>
-  </body>
-  </html>
+    <script>
+      // Empresas genéricas para busca
+      const empresas = [
+        {
+          nome: 'Bright Solutions',
+          descricao:
+            'Consultoria em inovação e crescimento digital. Aenean sed odio et mauris elementum malesuada.',
+          imagem: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=900&q=80'
+        },
+        {
+          nome: 'Future Minds',
+          descricao:
+            'Educação corporativa e desenvolvimento de talentos para equipes que buscam alta performance.',
+          imagem: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=900&q=80'
+        },
+        {
+          nome: 'Nova Tech',
+          descricao:
+            'Empresa de tecnologia focada em produtos colaborativos e produtividade para times remotos.',
+          imagem: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=900&q=80'
+        },
+        {
+          nome: 'BluePeak',
+          descricao:
+            'Soluções em marketing de performance e estratégia de marca para negócios digitais.',
+          imagem: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80'
+        }
+      ];
 
+      const lista = document.getElementById('listaEmpresas');
+      const input = document.getElementById('searchEmpresa');
+
+      function render(filtro = '') {
+        const termo = filtro.trim().toLowerCase();
+        const data = empresas.filter(e => e.nome.toLowerCase().includes(termo));
+        const mostrar = data.length ? [data[0]] : [];
+        if (!mostrar.length) {
+          lista.innerHTML = '<p>Nenhuma empresa encontrada.</p>';
+          return;
+        }
+        lista.innerHTML = mostrar
+          .map(
+            (e) => `
+            <article class="follow-card">
+              <img src="${e.imagem}" alt="${e.nome}" />
+              <div class="follow-info">
+                <h3>${e.nome}</h3>
+                <p>${e.descricao}</p>
+              </div>
+            </article>
+          `
+          )
+          .join('');
+      }
+
+      input.addEventListener('input', () => render(input.value));
+      render();
+    </script>
+  </body>
+</html>
 

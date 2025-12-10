@@ -14,6 +14,7 @@ public class Pessoa {
     private String email;
     private String senha;
     private String tipoAcesso;
+    private String empresaNome;
 
     public Pessoa(){;}
 
@@ -28,6 +29,7 @@ public class Pessoa {
     public void setEmail(String email) { this.email = email; }
     public void setSenha(String senha) { this.senha = senha; }
     public void setTipoAcesso(String tipoAcesso) { this.tipoAcesso = tipoAcesso; }
+    public void setEmpresaNome(String empresaNome) { this.empresaNome = empresaNome; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -35,4 +37,5 @@ public class Pessoa {
     public String getEmail() { return email; }
     public String getSenha() { return senha; }
     public String getTipoAcesso() { return tipoAcesso; }
+    public String getEmpresaNome() { return empresaNome; }
 }
